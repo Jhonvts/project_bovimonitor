@@ -5,3 +5,11 @@ Contribuidores
 -Manoela de Deus
 -Sophie Sugano
 -Isabelly Rodrigues
+
+ Arquitetura do Sistema
+
+ Diagrama de Contêiner (C4 - Nível 2)
+![Diagrama de Contêiner](container.png)
+
+ Diagrama de Componente (C4 - Nível 3)
+![Diagrama de Componente](componente.png)
