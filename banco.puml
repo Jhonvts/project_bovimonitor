@@ -28,7 +28,6 @@ entity "ManejoSanitario" as manejo {
   data_liberacao : DATE
 }
 
-' Relacionamentos (Cardinalidades)
 lote ||--o{ manejo : "recebe"
 vacina ||--o{ manejo : "é aplicada em"
 
