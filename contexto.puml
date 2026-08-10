@@ -1,0 +1,11 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(produtor, "Produtor Rural", "Cadastra lotes, registra vacinações e recebe alertas das próximas doses.")
+System(sistema, "Sistema Bovimonitor", "Armazena histórico de vacinação, calcula o intervalo para as próximas doses e agenda alertas.")
+System_Ext(notificacao, "Serviço de Notificação", "Serviço externo (WhatsApp) para envio de alertas.")
+
+Rel(produtor, sistema, "Cadastra vacinações e consulta lembretes", "HTTPS")
+Rel(sistema, notificacao, "Solicita o envio de e-mails/mensagens de lembrete", "API/SMTP")
+Rel(notificacao, produtor, "Envia alertas e lembretes de vacinação", "WhatsApp")
+@enduml
