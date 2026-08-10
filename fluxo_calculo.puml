@@ -1,0 +1,52 @@
+@startuml
+skinparam ActivityBackgroundColor #F9F9F9
+skinparam ActivityBorderColor #2B5B84
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityDiamondBorderColor #2B5B84
+
+title Fluxograma de Processo - Cálculo de Arrobas em Lote
+
+start
+
+:Receber entrada de dados no Controlador de Rotas;
+note right
+  Dados de Entrada:
+  - Quantidade de animais (cabecas)
+  - Peso bruto total do lote (kg)
+  - Desconto / Quebra de peso (%)
+end note
+
+:Enviar dados para o Módulo de Cálculos;
+
+partition "Módulo de Cálculos (Regra de Negócio)" {
+    :Validar se peso bruto > 0 e quantidade > 0;
+    
+    if (Dados válidos?) then (sim)
+        :Calcular peso líquido total (kg);
+        note right
+          Peso Líquido = Peso Bruto * (1 - Desconto%)
+        end note
+
+        :Calcular total de arrobas (@) do lote;
+        note right
+          Arrobas Totais = Peso Líquido / 15
+        end note
+
+        :Calcular média de arrobas por animal (@/cab);
+        note right
+          Média por Cabeça = Arrobas Totais / Quantidade de Animais
+        end note
+    else (não)
+        :Retornar erro de validação ("Dados inválidos");
+        stop
+    endif
+}
+
+:Enviar dados processados para o Gerenciador de Dados (ORM);
+
+:Persistir registro de lote e cálculo no Banco de Dados;
+
+:Retornar resposta de sucesso (200 OK) com o resultado do cálculo;
+
+stop
+@enduml
