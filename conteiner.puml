@@ -1,16 +1,44 @@
-@startuml Container_BoviMonitor
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+@startuml DER_BoviMonitor
+hide circle
+skinparam linetype ortho
 
-Person(usuario, "Usuário", "Pecuarista ou Capataz")
-
-System_Boundary(boviBoundary, "Sistema BoviMonitor") {
-    Container(webApp, "Aplicação Web / Mobile", "HTML, CSS, JavaScript", "Telas simples e intuitivas para cadastro de lotes e visualização de alertas.")
-    Container(api, "API Backend", "Python / Flask", "Processa regras de negócio, cálculo de carência e validação de vacinas.")
-    ContainerDb(database, "Banco de Dados", "PostgreSQL / SQLite", "Armazena dados de lotes, pastos, vacinas e histórico de aplicações.")
+entity "PASTO" as pasto {
+  * id_pasto : INT <<PK>>
+  --
+  nome_pasto : VARCHAR(50)
+  capacidade_suportada : INT
 }
 
-Rel(usuario, webApp, "Acessa e digita dados", "HTTPS")
-Rel(webApp, api, "Faz chamadas de API (JSON)", "HTTPS")
-Rel(api, database, "Lê e grava dados", "SQL / ORM")
+entity "LOTE" as lote {
+  * id_lote : INT <<PK>>
+  --
+  id_pasto : INT <<FK>>
+  nome_lote : VARCHAR(50)
+  quantidade_cabecas : INT
+  categoria_animal : VARCHAR(30)
+}
+
+entity "MEDICAMENTO" as medicamento {
+  * id_medicamento : INT <<PK>>
+  --
+  nome_medicamento : VARCHAR(100)
+  tipo : VARCHAR(30)
+  dias_carencia : INT
+  obrigatorio_legal : BOOLEAN
+}
+
+entity "APLICACAO_MANEJO" as aplicacao {
+  * id_aplicacao : INT <<PK>>
+  --
+  id_lote : INT <<FK>>
+  id_medicamento : INT <<FK>>
+  data_aplicacao : DATE
+  data_liberacao_carencia : DATE
+  dosagem : VARCHAR(20)
+}
+
+pasto ||--o{ lote : "abriga"
+lote ||--o{ aplicacao : "recebe"
+medicamento ||--o{ aplicacao : "é aplicado em"
 
 @enduml
