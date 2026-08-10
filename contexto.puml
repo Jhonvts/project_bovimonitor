@@ -1,16 +1,11 @@
-@startuml contexto
+@startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
-TITLE Diagrama de Contexto - Sistema BovinoMotor
+Person(produtor, "Produtor Rural", "Cadastra lotes, registra vacinações e recebe alertas das próximas doses.")
+System(sistema, "Sistema Bovimonitor", "Armazena histórico de vacinação, calcula o intervalo para as próximas doses e agenda alertas.")
+System_Ext(notificacao, "Serviço de Notificação", "Serviço externo (WhatsApp) para envio de alertas.")
 
-Person(produtor, "Produtor Rural", "Utiliza o sistema para gerenciar pesagens, insumos e relatórios da propriedade.")
-System(bovinomotor, "BovinoMotor", "Sistema de Gestão Agropecuária para cálculo de arrobas, controle de lote e manejo de insumos.")
-
-System_Ext(balanca, "Sistema da Balança Digital", "Fornece dados de pesagem dos animais (opcional/integração externa).")
-System_Ext(clima, "Serviço de Previsão do Tempo", "Fornece dados meteorológicos para planejamento de manejo.")
-
-Rel(produtor, bovinomotor, "Gerencia lotes, cadastra insumos e visualiza relatórios")
-Rel(balanca, bovinomotor, "Envia dados de peso bruto")
-Rel(bovinomotor, clima, "Consulta previsão do tempo")
-
+Rel(produtor, sistema, "Cadastra vacinações e consulta lembretes", "HTTPS")
+Rel(sistema, notificacao, "Solicita o envio de mensagens de lembrete", "API/SMTP")
+Rel(notificacao, produtor, "Envia alertas e lembretes de vacinação", "WhatsApp")
 @enduml
