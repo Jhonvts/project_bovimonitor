@@ -1,52 +1,27 @@
-@startuml
-skinparam ActivityBackgroundColor #F9F9F9
-skinparam ActivityBorderColor #2B5B84
-skinparam ActivityDiamondBackgroundColor #FFFFFF
-skinparam ActivityDiamondBorderColor #2B5B84
-
-title Fluxograma de Processo - Cálculo de Arrobas em Lote
+@startuml fluxo_calculo
+title Fluxograma do Cálculo de Arrobas do Lote (BovinoMotor)
 
 start
+:Produtor seleciona o Lote de Animais;
+:Informa o número de cabeças (N);
+:Informa o peso total do lote em kg (P_total);
 
-:Receber entrada de dados no Controlador de Rotas;
-note right
-  Dados de Entrada:
-  - Quantidade de animais (cabecas)
-  - Peso bruto total do lote (kg)
-  - Desconto / Quebra de peso (%)
-end note
-
-:Enviar dados para o Módulo de Cálculos;
-
-partition "Módulo de Cálculos (Regra de Negócio)" {
-    :Validar se peso bruto > 0 e quantidade > 0;
+if (P_total > 0 E N > 0) then (Sim)
+    :Calcular Média por Cabeça (kg):
+    Média_kg = P_total / N;
     
-    if (Dados válidos?) then (sim)
-        :Calcular peso líquido total (kg);
-        note right
-          Peso Líquido = Peso Bruto * (1 - Desconto%)
-        end note
-
-        :Calcular total de arrobas (@) do lote;
-        note right
-          Arrobas Totais = Peso Líquido / 15
-        end note
-
-        :Calcular média de arrobas por animal (@/cab);
-        note right
-          Média por Cabeça = Arrobas Totais / Quantidade de Animais
-        end note
-    else (não)
-        :Retornar erro de validação ("Dados inválidos");
-        stop
-    endif
-}
-
-:Enviar dados processados para o Gerenciador de Dados (ORM);
-
-:Persistir registro de lote e cálculo no Banco de Dados;
-
-:Retornar resposta de sucesso (200 OK) com o resultado do cálculo;
+    :Calcular Total de Arrobas do Lote (@):
+    Total_Arrobas = P_total / 15;
+    
+    :Calcular Média de Arrobas por Cabeça:
+    Media_Arrobas = Total_Arrobas / N;
+    
+    :Salvar Registro de Pesagem no Banco de Dados;
+    :Exibir Resultado no Painel do BovinoMotor;
+else (Não)
+    :Exibir mensagem de erro: 
+    "Valores devem ser maiores que zero";
+endif
 
 stop
-@enduml
+@startuml
