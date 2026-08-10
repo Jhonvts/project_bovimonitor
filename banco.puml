@@ -1,34 +1,35 @@
-@startuml Componentes_API_BoviMonitor
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+@startuml BD_BoviMonitor
+hide circle
+skinparam linetype ortho
 
-CONTAINER(webApp, "Aplicação Web / Mobile", "HTML/CSS/JS", "Interface do produtor/capataz")
-CONTAINER_DB(database, "Banco de Dados", "PostgreSQL/SQLite", "Armazena lotes, vacinas e aplicações")
-
-CONTAINER_BOUNDARY(api, "API Backend (Python / Flask)") {
-    Component(authController, "Controlador de Autenticação", "Flask REST", "Gerencia login e permissões do pecuarista e capataz.")
-    Component(loteController, "Controlador de Lotes", "Flask REST", "Recebe requisições de cadastro, atualização de cabeças e movimentação de pasto.")
-    Component(manejoController, "Controlador de Manejo Sanitário", "Flask REST", "Recebe lançamentos de vacinas e medicamentos aplicados.")
-    
-    Component(carenciaService, "Serviço de Cálculo de Carência", "Python Class", "Aplica a regra de negócio: calcula (Data Aplicação + Dias Carência) e define se o lote está 'BLOQUEADO' ou 'LIBERADO'.")
-    Component(calendarioService, "Serviço de Calendário Sanitário", "Python Class", "Verifica prazos de vacinas obrigatórias (Aftosa/Brucelose) e gera alertas de pendência.")
-    
-    Component(repository, "Camada de Acesso a Dados (ORM)", "SQLAlchemy", "Executa as consultas e gravações no banco de dados.")
+entity "Lote" as lote {
+  * id : INTEGER <<PK>>
+  --
+  nome : VARCHAR(100)
+  quantidade_cabecas : INTEGER
+  status : VARCHAR(20)
 }
 
-' Relacionamentos da Interface com os Controladores
-Rel(webApp, authController, "Faz login e autentica", "JSON/HTTPS")
-Rel(webApp, loteController, "Envia dados de lotes e pastos", "JSON/HTTPS")
-Rel(webApp, manejoController, "Registra aplicações de vacina/remédio", "JSON/HTTPS")
+entity "Vacina" as vacina {
+  * id : INTEGER <<PK>>
+  --
+  nome : VARCHAR(100)
+  fabricante : VARCHAR(100)
+  dias_carencia : INTEGER
+  obrigatoria : BOOLEAN
+}
 
-' Relacionamentos internos da API
-Rel(loteController, repository, "Persiste e busca lotes", "Python Call")
-Rel(manejoController, carenciaService, "Solicita validação e cálculo de carência", "Python Call")
-Rel(manejoController, calendarioService, "Solicita atualização do status de vacina", "Python Call")
+entity "ManejoSanitario" as manejo {
+  * id : INTEGER <<PK>>
+  --
+  * lote_id : INTEGER <<FK>>
+  * vacina_id : INTEGER <<FK>>
+  data_aplicacao : DATE
+  data_liberacao : DATE
+}
 
-Rel(carenciaService, repository, "Atualiza status de liberação do lote", "Python Call")
-Rel(calendarioService, repository, "Atualiza status das vacinas pendentes", "Python Call")
-
-' Relacionamento do ORM com o Banco
-Rel(repository, database, "Lê e escreve registros", "SQL")
+' Relacionamentos (Cardinalidades)
+lote ||--o{ manejo : "recebe"
+vacina ||--o{ manejo : "é aplicada em"
 
 @enduml
