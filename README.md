@@ -8,8 +8,14 @@ Contribuidores
 
  Arquitetura do Sistema
 
- Diagrama de Contêiner (C4 - Nível 2)
+Diagrama de Contêiner (C1 - Nível 2) Sophie
 ![Diagrama de Contêiner](container.png)
 
- Diagrama de Componente (C4 - Nível 3)
+Diagrama de Contêiner (C2 - Nível 2) Jhonatas
+![Diagrama de Contêiner](container.png)
+
+ Diagrama de Contêiner (C3 - Nível 2) Isabelly
+![Diagrama de Contêiner](container.png)
+
+ Diagrama de Componente (C4 - Nível 3) Manoela
 ![Diagrama de Componente](componente.png)
