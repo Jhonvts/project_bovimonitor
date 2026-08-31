@@ -1,0 +1,27 @@
+@startuml fluxo_calculo
+title Fluxograma do Cálculo de Arrobas do Lote (BovinoMotor)
+
+start
+:Produtor seleciona o Lote de Animais;
+:Informa o número de cabeças (N);
+:Informa o peso total do lote em kg (P_total);
+
+if (P_total > 0 E N > 0) then (Sim)
+    :Calcular Média por Cabeça (kg):
+    Média_kg = P_total / N;
+    
+    :Calcular Total de Arrobas do Lote (@):
+    Total_Arrobas = P_total / 15;
+    
+    :Calcular Média de Arrobas por Cabeça:
+    Media_Arrobas = Total_Arrobas / N;
+    
+    :Salvar Registro de Pesagem no Banco de Dados;
+    :Exibir Resultado no Painel do BovinoMotor;
+else (Não)
+    :Exibir mensagem de erro: 
+    "Valores devem ser maiores que zero";
+endif
+
+stop
+@startuml
