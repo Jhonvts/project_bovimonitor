@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BoviMonitor - Cadastro de Lote</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>BoviMonitor</h1>
+        <p>Sistema de Controle Sanitário Bovino</p>
+    </header>
+
+    <main class="container">
+
+        <section class="card">
+
+            <h2>Cadastro de Lote</h2>
+
+            <p class="descricao">
+                Cadastre um novo lote de animais para realizar o
+                acompanhamento sanitário.
+            </p>
+
+            <form action="/cadastro-lote" method="POST">
+
+                <div class="campo">
+                    <label for="nome_lote">
+                        Nome do lote
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome_lote"
+                        name="nome_lote"
+                        placeholder="Ex.: Lote Nelore 01"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="quantidade_cabecas">
+                        Quantidade de cabeças
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantidade_cabecas"
+                        name="quantidade_cabecas"
+                        min="1"
+                        placeholder="Ex.: 50"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="status">
+                        Status do lote
+                    </label>
+
+                    <select id="status" name="status" required>
+
+                        <option value="">
+                            Selecione o status
+                        </option>
+
+                        <option value="Ativo">
+                            Ativo
+                        </option>
+
+                        <option value="Inativo">
+                            Inativo
+                        </option>
+
+                    </select>
+                </div>
+
+                <button type="submit">
+                    Cadastrar Lote
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
