@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Vacinação</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>💉 Registro de Vacinação</h1>
+
+</header>
+
+<main>
+
+    <h2>{{ lote.nome }}</h2>
+
+    <p>
+        Quantidade de cabeças:
+        <strong>{{ lote.quantidade }}</strong>
+    </p>
+
+
+    <form method="POST">
+
+        <label>
+            Tipo de vacina ou medicamento:
+        </label>
+
+        <input
+            type="text"
+            name="vacina"
+            placeholder="Ex: Febre Aftosa"
+            value="{{ lote.vacina }}"
+            required
+        >
+
+
+        <label>
+            Data da última vacinação:
+        </label>
+
+        <input
+            type="date"
+            name="ultima_vacinacao"
+            value="{{ lote.ultima_vacinacao }}"
+            required
+        >
+
+
+        <label>
+            Data da próxima vacinação:
+        </label>
+
+        <input
+            type="date"
+            name="proxima_vacinacao"
+            value="{{ lote.proxima_vacinacao }}"
+            required
+        >
+
+
+        <button type="submit">
+            Registrar Vacinação
+        </button>
+
+    </form>
+
+    <br>
+
+    <a class="botao"
+       href="{{ url_for('index') }}">
+        Voltar
+    </a>
+
+</main>
+
+</body>
+</html>
