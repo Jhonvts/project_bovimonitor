@@ -1,407 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Lotes - BoviMonitor</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background-color: #f4f6f4;
-            padding: 30px;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #245c32;
-        }
-
-        .descricao {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #666;
-        }
-
-        .formulario {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .formulario h2 {
-            margin-bottom: 20px;
-            color: #245c32;
-        }
-
-        .campos {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-
-        .campo-completo {
-            grid-column: 1 / 3;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            background-color: #245c32;
-            color: white;
-            cursor: pointer;
-            font-size: 15px;
-        }
-
-        button:hover {
-            background-color: #194524;
-        }
-
-        .tabela-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .tabela-container h2 {
-            color: #245c32;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 13px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #245c32;
-            color: white;
-        }
-
-        .status-ativo {
-            color: green;
-            font-weight: bold;
-        }
-
-        .status-inativo {
-            color: red;
-            font-weight: bold;
-        }
-
-        .btn-editar {
-            background-color: #d89b00;
-            margin: 0;
-            padding: 8px 12px;
-        }
-
-        .btn-excluir {
-            background-color: #c0392b;
-            margin: 0;
-            padding: 8px 12px;
-        }
-
-        .acoes {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-        }
-
-        @media (max-width: 700px) {
-            .campos {
-                grid-template-columns: 1fr;
-            }
-
-            .campo-completo {
-                grid-column: auto;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            th, td {
-                padding: 8px 4px;
-            }
-        }
-    </style>
+    <title>Registro de Lotes</title>
 </head>
 
 <body>
 
-<div class="container">
+    <h1>Registro de Lotes de Gado</h1>
 
-    <h1>🐄 Registro de Lotes</h1>
-    <p class="descricao">
-        Cadastro e controle da quantidade de cabeças de gado por lote.
+    <p>
+        Cadastre os lotes e registre a quantidade de cabeças de gado.
     </p>
 
-    <!-- FORMULÁRIO -->
-    <div class="formulario">
+    <hr>
 
-        <h2>Novo Lote</h2>
+    <h2>Cadastrar Novo Lote</h2>
 
-        <form id="formLote">
+    <form>
 
-            <div class="campos">
+        <label for="nome">Nome do lote:</label>
+        <input
+            type="text"
+            id="nome"
+            name="nome"
+            placeholder="Ex.: Lote 01"
+            required
+        >
 
-                <div>
-                    <label for="nome">Nome do Lote</label>
-                    <input
-                        type="text"
-                        id="nome"
-                        placeholder="Ex.: Lote 01"
-                        required>
-                </div>
+        <br><br>
 
-                <div>
-                    <label for="quantidade">Quantidade de Cabeças</label>
-                    <input
-                        type="number"
-                        id="quantidade"
-                        min="0"
-                        placeholder="Ex.: 100"
-                        required>
-                </div>
+        <label for="quantidade">Quantidade de cabeças:</label>
+        <input
+            type="number"
+            id="quantidade"
+            name="quantidade"
+            placeholder="Ex.: 100"
+            min="0"
+            required
+        >
 
-                <div>
-                    <label for="tendas">Tendas/Áreas</label>
-                    <input
-                        type="number"
-                        id="tendas"
-                        min="0"
-                        placeholder="Ex.: 2"
-                        required>
-                </div>
+        <br><br>
 
-                <div>
-                    <label for="status">Status</label>
-                    <select id="status">
-                        <option value="Ativo">Ativo</option>
-                        <option value="Inativo">Inativo</option>
-                    </select>
-                </div>
+        <label for="tendas">Tendas/Áreas:</label>
+        <input
+            type="number"
+            id="tendas"
+            name="tendas"
+            placeholder="Ex.: 2"
+            min="0"
+        >
 
-            </div>
+        <br><br>
 
-            <button type="submit">
-                + Registrar Lote
-            </button>
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+        </select>
 
-        </form>
-    </div>
+        <br><br>
 
+        <button type="submit">Registrar Lote</button>
 
-    <!-- TABELA DE LOTES -->
-    <div class="tabela-container">
+    </form>
 
-        <h2>Lotes Registrados</h2>
+    <hr>
 
-        <table>
+    <h2>Lotes Registrados</h2>
 
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Cabeças de Gado</th>
-                    <th>Tendas</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+    <table border="1">
 
-            <tbody id="listaLotes">
+        <thead>
+            <tr>
+                <th>Nome do Lote</th>
+                <th>Quantidade de Cabeças</th>
+                <th>Tendas/Áreas</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
 
-                <!-- Exemplo inicial -->
-                <tr>
-                    <td>Lote 01</td>
-                    <td>100</td>
-                    <td>2</td>
-                    <td class="status-ativo">Ativo</td>
-                    <td>
-                        <div class="acoes">
-                            <button class="btn-editar"
-                                onclick="editarLote(this)">
-                                Editar
-                            </button>
+        <tbody>
 
-                            <button class="btn-excluir"
-                                onclick="excluirLote(this)">
-                                Excluir
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+            <tr>
+                <td>Lote 01</td>
+                <td>100</td>
+                <td>2</td>
+                <td>Ativo</td>
+                <td>
+                    <button>Editar</button>
+                    <button>Excluir</button>
+                </td>
+            </tr>
 
-            </tbody>
+            <tr>
+                <td>Lote 02</td>
+                <td>75</td>
+                <td>1</td>
+                <td>Ativo</td>
+                <td>
+                    <button>Editar</button>
+                    <button>Excluir</button>
+                </td>
+            </tr>
 
-        </table>
+        </tbody>
 
-    </div>
-
-</div>
-
-
-<script>
-
-    const formulario = document.getElementById("formLote");
-    const listaLotes = document.getElementById("listaLotes");
-
-    // CADASTRAR LOTE
-    formulario.addEventListener("submit", function(event) {
-
-        event.preventDefault();
-
-        const nome = document.getElementById("nome").value;
-        const quantidade = document.getElementById("quantidade").value;
-        const tendas = document.getElementById("tendas").value;
-        const status = document.getElementById("status").value;
-
-        const linha = document.createElement("tr");
-
-        linha.innerHTML = `
-            <td>${nome}</td>
-
-            <td>${quantidade}</td>
-
-            <td>${tendas}</td>
-
-            <td class="${status === "Ativo"
-                ? "status-ativo"
-                : "status-inativo"}">
-                ${status}
-            </td>
-
-            <td>
-                <div class="acoes">
-
-                    <button
-                        class="btn-editar"
-                        onclick="editarLote(this)">
-                        Editar
-                    </button>
-
-                    <button
-                        class="btn-excluir"
-                        onclick="excluirLote(this)">
-                        Excluir
-                    </button>
-
-                </div>
-            </td>
-        `;
-
-        listaLotes.appendChild(linha);
-
-        formulario.reset();
-
-    });
-
-
-    // EDITAR LOTE
-    function editarLote(botao) {
-
-        const linha = botao.closest("tr");
-
-        const nomeAtual = linha.cells[0].textContent;
-        const quantidadeAtual = linha.cells[1].textContent;
-        const tendasAtual = linha.cells[2].textContent;
-        const statusAtual = linha.cells[3].textContent;
-
-        const novoNome = prompt(
-            "Digite o novo nome do lote:",
-            nomeAtual
-        );
-
-        if (novoNome === null) return;
-
-        const novaQuantidade = prompt(
-            "Digite a nova quantidade de cabeças:",
-            quantidadeAtual
-        );
-
-        if (novaQuantidade === null) return;
-
-        const novasTendas = prompt(
-            "Digite a nova quantidade de tendas:",
-            tendasAtual
-        );
-
-        if (novasTendas === null) return;
-
-        const novoStatus = prompt(
-            "Digite o status (Ativo ou Inativo):",
-            statusAtual
-        );
-
-        if (novoStatus === null) return;
-
-        linha.cells[0].textContent = novoNome;
-        linha.cells[1].textContent = novaQuantidade;
-        linha.cells[2].textContent = novasTendas;
-
-        linha.cells[3].textContent = novoStatus;
-
-        linha.cells[3].className =
-            novoStatus.toLowerCase() === "ativo"
-            ? "status-ativo"
-            : "status-inativo";
-    }
-
-
-    // EXCLUIR LOTE
-    function excluirLote(botao) {
-
-        const linha = botao.closest("tr");
-
-        const nome = linha.cells[0].textContent;
-
-        const confirmar = confirm(
-            "Deseja excluir o " + nome + "?"
-        );
-
-        if (confirmar) {
-            linha.remove();
-        }
-    }
-
-</script>
+    </table>
 
 </body>
+
 </html>
 
