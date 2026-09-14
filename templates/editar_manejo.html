@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Editar Manejo Sanitário</h2>
+    <form action="{{ url_for('editar_manejo', id=registro.id) }}" method="POST">
+        <div class="form-group">
+            <label for="brinco">Identificação do Animal (Brinco/ID)</label>
+            <input type="text" id="brinco" name="brinco" value="{{ registro.brinco }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="peso">Peso Vivo (kg)</label>
+            <input type="number" id="peso" name="peso" step="0.1" min="1" value="{{ registro.peso_kg }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="vacina">Vacina / Insumo</label>
+            <select id="vacina" name="vacina" required>
+                <option value="Aftosa" {% if registro.vacina == 'Aftosa' %}selected{% endif %}>Aftosa</option>
+                <option value="Brucelose" {% if registro.vacina == 'Brucelose' %}selected{% endif %}>Brucelose</option>
+                <option value="Raiva Bovina" {% if registro.vacina == 'Raiva Bovina' %}selected{% endif %}>Raiva Bovina</option>
+                <option value="Vermífugo/Antiparasitário" {% if registro.vacina == 'Vermífugo/Antiparasitário' %}selected{% endif %}>Vermífugo/Antiparasitário</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="custo_ml">Custo do Insumo (R$ por mL)</label>
+            <input type="number" id="custo_ml" name="custo_ml" step="0.01" min="0" value="{{ registro.custo_ml }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="data_aplicacao">Data da Aplicação</label>
+            <input type="date" id="data_aplicacao" name="data_aplicacao" value="{{ registro.data_aplicacao_raw }}" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Atualizar Registro</button>
+        <a href="{{ url_for('historico') }}" class="btn-cancel">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
