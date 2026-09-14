@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Histórico de Tratamentos Sanitários</h2>
+
+{% if registros %}
+<table>
+    <thead>
+        <tr>
+            <th>Brinco</th>
+            <th>Vacina</th>
+            <th>Peso</th>
+            <th>Dose (mL)</th>
+            <th>Custo (R$)</th>
+            <th>Aplicação</th>
+            <th>Próx. Reforço</th>
+            <th>Status Sanitário</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reg in registros %}
+        <tr>
+            <td><strong>{{ reg.brinco }}</strong></td>
+            <td>{{ reg.vacina }}</td>
+            <td>{{ reg.peso_kg }} kg</td>
+            <td>{{ reg.dosagem_ml }} mL</td>
+            <td>R$ {{ reg.custo_total_animal }}</td>
+            <td>{{ reg.data_aplicacao_fmt }}</td>
+            <td>{{ reg.data_reforco_fmt }}</td>
+            <td>
+                <span class="badge {{ reg.status_class }}">
+                    {{ reg.status_label }}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Nenhum registro sanitário cadastrado até o momento.</p>
+{% endif %}
+{% endblock %}
