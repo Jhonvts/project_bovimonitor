@@ -2,12 +2,17 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>BoviMonitor - Meu Perfil</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 
 <body>
@@ -42,13 +47,13 @@
             <h2>Meu Perfil</h2>
 
             <p class="descricao">
-                Confira suas informações cadastradas no BoviMonitor.
+                Confira suas informações cadastradas.
             </p>
 
 
             <div class="perfil-info">
 
-                <h3>Dados pessoais</h3>
+                <h3>Dados da conta</h3>
 
                 <p>
                     <strong>Nome:</strong>
@@ -56,37 +61,49 @@
                 </p>
 
                 <p>
-                    <strong>CPF:</strong>
-                    {{ usuario.cpf }}
-                </p>
-
-                <p>
-                    <strong>Telefone:</strong>
-                    {{ usuario.telefone }}
-                </p>
-
-                <p>
                     <strong>E-mail:</strong>
                     {{ usuario.email }}
                 </p>
 
-
-                <h3>Dados da propriedade</h3>
-
                 <p>
-                    <strong>Propriedade:</strong>
-                    {{ usuario.propriedade }}
+                    <strong>Celular:</strong>
+                    {{ usuario.telefone }}
                 </p>
 
-                <p>
-                    <strong>Localização:</strong>
-                    {{ usuario.localizacao }}
-                </p>
 
-                <p>
-                    <strong>Área:</strong>
-                    {{ usuario.area }} hectares
-                </p>
+                <h3>Minha propriedade</h3>
+
+
+                {% if propriedade %}
+
+                    <p>
+                        <strong>Nome:</strong>
+                        {{ propriedade.nome }}
+                    </p>
+
+                    <p>
+                        <strong>Localização:</strong>
+                        {{ propriedade.localizacao }}
+                    </p>
+
+                    <p>
+                        <strong>Área:</strong>
+                        {{ propriedade.area }} hectares
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        Você ainda não cadastrou uma propriedade.
+                    </p>
+
+                    <a href="/propriedade/cadastrar">
+                        <button type="button">
+                            + Cadastrar propriedade
+                        </button>
+                    </a>
+
+                {% endif %}
 
             </div>
 
@@ -94,15 +111,20 @@
             <div class="acoes">
 
                 <a href="/perfil/editar">
+
                     <button type="button">
                         Atualizar Perfil
                     </button>
+
                 </a>
 
+
                 <a href="/logout">
+
                     <button type="button">
                         Sair da Conta
                     </button>
+
                 </a>
 
             </div>
