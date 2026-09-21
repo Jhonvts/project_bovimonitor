@@ -9,9 +9,13 @@ USE bovimonitor;
 
 CREATE TABLE lotes (
     id INT AUTO_INCREMENT PRIMARY KEY,
+
     nome VARCHAR(100) NOT NULL,
+
     quantidade_cabecas INT NOT NULL,
+
     status ENUM('ATIVO', 'BLOQUEADO') DEFAULT 'ATIVO',
+
     data_cadastro DATE DEFAULT (CURRENT_DATE),
 
     CONSTRAINT chk_quantidade
@@ -25,9 +29,13 @@ CREATE TABLE lotes (
 
 CREATE TABLE vacinas (
     id INT AUTO_INCREMENT PRIMARY KEY,
+
     nome VARCHAR(100) NOT NULL,
-    fabricante VARCHAR(100),
+
+    tipo ENUM('Vacina', 'Medicamento') NOT NULL,
+
     dias_carencia INT NOT NULL DEFAULT 0,
+
     obrigatoria BOOLEAN NOT NULL DEFAULT FALSE,
 
     CONSTRAINT chk_carencia
@@ -43,9 +51,11 @@ CREATE TABLE manejos_sanitarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
     lote_id INT NOT NULL,
+
     vacina_id INT NOT NULL,
 
     data_aplicacao DATE NOT NULL,
+
     data_liberacao DATE NOT NULL,
 
     observacao TEXT,
@@ -61,46 +71,75 @@ CREATE TABLE manejos_sanitarios (
         ON DELETE RESTRICT
 );
 
--- =================================================
---Calculando a data de liberação automaticamente
--- =================================================
+
+-- =========================================
+-- CONSULTA DOS MANEJOS
+-- Mostra lote, vacina e data de liberação
+-- =========================================
 
 SELECT
     m.id,
     l.nome AS lote,
     v.nome AS vacina,
+    v.tipo,
     m.data_aplicacao,
     v.dias_carencia,
-    DATE_ADD(
-        m.data_aplicacao,
-        INTERVAL v.dias_carencia DAY
-    ) AS data_liberacao
+    m.data_liberacao
 FROM manejos_sanitarios m
 INNER JOIN lotes l
     ON m.lote_id = l.id
 INNER JOIN vacinas v
     ON m.vacina_id = v.id;
 
---=================================================
--- Ver quais lotes estão bloqueados
--- =================================================
+
+-- =========================================
+-- VERIFICAR LOTES EM PERÍODO DE CARÊNCIA
+-- =========================================
 
 SELECT
+    l.id,
     l.nome AS lote,
     l.quantidade_cabecas,
     v.nome AS vacina,
     m.data_aplicacao,
-    DATE_ADD(
-        m.data_aplicacao,
-        INTERVAL v.dias_carencia DAY
-    ) AS data_liberacao
+    m.data_liberacao
 FROM manejos_sanitarios m
 INNER JOIN lotes l
     ON m.lote_id = l.id
 INNER JOIN vacinas v
     ON m.vacina_id = v.id
-WHERE CURDATE() <
-      DATE_ADD(
-          m.data_aplicacao,
-          INTERVAL v.dias_carencia DAY
-      );
+WHERE CURDATE() < m.data_liberacao;
+
+
+-- =========================================
+-- VERIFICAR VACINAS OBRIGATÓRIAS
+-- =========================================
+
+SELECT
+    id,
+    nome,
+    tipo,
+    dias_carencia
+FROM vacinas
+WHERE obrigatoria = TRUE;
+
+
+-- =========================================
+-- RESUMO DAS VACINAS E MEDICAMENTOS
+-- =========================================
+
+SELECT
+    tipo,
+    COUNT(*) AS quantidade
+FROM vacinas
+GROUP BY tipo;
+
+
+-- =========================================
+-- RESUMO DE VACINAS OBRIGATÓRIAS
+-- =========================================
+
+SELECT
+    COUNT(*) AS total_vacinas_obrigatorias
+FROM vacinas
+WHERE obrigatoria = TRUE;
