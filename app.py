@@ -9,7 +9,6 @@ from flask_login import (
     current_user
 )
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import date, timedelta
 
 
 app = Flask(__name__)
@@ -78,37 +77,6 @@ class Usuario(UserMixin, db.Model):
         default="usuario"
     )
 
-# ==========================================================
-#                         PROPRIEDADE
-# ==========================================================
-
-class Propriedade(db.Model):
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    usuario_id = db.Column(
-        db.Integer,
-        db.ForeignKey("usuario.id"),
-        nullable=False
-    )
-
-    nome = db.Column(
-        db.String(150),
-        nullable=False
-    )
-
-    localizacao = db.Column(
-        db.String(150),
-        nullable=False
-    )
-
-    area = db.Column(
-        db.Float,
-        nullable=False
-    )
 
 # ==========================================================
 #                         LOTE
@@ -266,7 +234,9 @@ def cadastro():
 
         if usuario_existente:
 
-            flash("Este e-mail já está cadastrado.")
+            flash(
+                "Este e-mail já está cadastrado."
+            )
 
             return redirect(
                 url_for("cadastro")
@@ -298,7 +268,9 @@ def cadastro():
         db.session.commit()
 
 
-        flash("Cadastro realizado com sucesso!")
+        flash(
+            "Cadastro realizado com sucesso!"
+        )
 
         return redirect(
             url_for("login")
@@ -378,77 +350,11 @@ def logout():
 @login_required
 def perfil():
 
-    propriedade = Propriedade.query.filter_by(
-        usuario_id=current_user.id
-    ).first()
-
     return render_template(
         "perfil.html",
-        usuario=current_user,
-        propriedade=propriedade
+        usuario=current_user
     )
 
-# ==========================================================
-#                         PROPRIEDADE
-# ==========================================================
-
-@app.route("/propriedade/cadastrar", methods=["GET", "POST"])
-@login_required
-def cadastrar_propriedade():
-
-    if request.method == "POST":
-
-        nome = request.form["nome"]
-
-        localizacao = request.form["localizacao"]
-
-        area = request.form["area"]
-
-
-        propriedade_existente = Propriedade.query.filter_by(
-            usuario_id=current_user.id
-        ).first()
-
-
-        if propriedade_existente:
-
-            flash("Você já possui uma propriedade cadastrada.")
-
-            return redirect(
-                url_for("perfil")
-            )
-
-
-        nova_propriedade = Propriedade(
-
-            usuario_id=current_user.id,
-
-            nome=nome,
-
-            localizacao=localizacao,
-
-            area=area
-
-        )
-
-
-        db.session.add(
-            nova_propriedade
-        )
-
-        db.session.commit()
-
-
-        flash("Propriedade cadastrada com sucesso!")
-
-        return redirect(
-            url_for("perfil")
-        )
-
-
-    return render_template(
-        "cadastro_propriedade.html"
-    )
 
 # ==========================================================
 #                    EDITAR PERFIL
@@ -466,7 +372,11 @@ def editar_perfil():
 
         db.session.commit()
 
-        flash("Perfil atualizado com sucesso!")
+
+        flash(
+            "Perfil atualizado com sucesso!"
+        )
+
 
         return redirect(
             url_for("perfil")
@@ -521,6 +431,7 @@ def lotes():
             "Lote cadastrado com sucesso!"
         )
 
+
         return redirect(
             url_for("lotes")
         )
@@ -553,7 +464,9 @@ def editar_lote(id):
 
     if lote.usuario_id != current_user.id:
 
-        flash("Você não pode editar este lote.")
+        flash(
+            "Você não pode editar este lote."
+        )
 
         return redirect(
             url_for("lotes")
@@ -575,6 +488,7 @@ def editar_lote(id):
         flash(
             "Lote atualizado com sucesso!"
         )
+
 
         return redirect(
             url_for("lotes")
@@ -603,14 +517,18 @@ def excluir_lote(id):
 
     if lote.usuario_id != current_user.id:
 
-        flash("Você não pode excluir este lote.")
+        flash(
+            "Você não pode excluir este lote."
+        )
 
         return redirect(
             url_for("lotes")
         )
 
 
-    db.session.delete(lote)
+    db.session.delete(
+        lote
+    )
 
     db.session.commit()
 
@@ -618,6 +536,7 @@ def excluir_lote(id):
     flash(
         "Lote excluído com sucesso!"
     )
+
 
     return redirect(
         url_for("lotes")
@@ -678,6 +597,7 @@ def cadastro_vacina():
         flash(
             "Vacina ou medicamento cadastrado com sucesso!"
         )
+
 
         return redirect(
             url_for("historico_vacinas")
@@ -745,6 +665,7 @@ def editar_vacina(id):
             "Vacina atualizada com sucesso!"
         )
 
+
         return redirect(
             url_for("historico_vacinas")
         )
@@ -780,6 +701,7 @@ def deletar_vacina(id):
     flash(
         "Vacina excluída com sucesso!"
     )
+
 
     return redirect(
         url_for("historico_vacinas")
