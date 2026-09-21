@@ -1,0 +1,68 @@
+
+
+{% extends 'base.html' %}
+
+{% block title %}Cadastrar Vacina - BoviMonitor{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+
+    <h2>Cadastrar Vacina ou Medicamento</h2>
+
+    <form action="{{ url_for('cadastro_vacina') }}" method="POST">
+
+        <div class="form-group">
+            <label for="nome">Nome da vacina ou medicamento</label>
+
+            <input
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Ex.: Vacina contra Febre Aftosa"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="tipo">Tipo</label>
+
+            <select id="tipo" name="tipo" required>
+                <option value="">Selecione...</option>
+                <option value="Vacina">Vacina</option>
+                <option value="Medicamento">Medicamento</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="dias_carencia">Dias de carência</label>
+
+            <input
+                type="number"
+                id="dias_carencia"
+                name="dias_carencia"
+                min="0"
+                placeholder="Ex.: 30"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="obrigatoria">Vacina obrigatória?</label>
+
+            <select id="obrigatoria" name="obrigatoria" required>
+                <option value="">Selecione...</option>
+                <option value="sim">Sim</option>
+                <option value="nao">Não</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            Cadastrar
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

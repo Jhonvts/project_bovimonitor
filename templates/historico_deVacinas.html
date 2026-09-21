@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Histórico de Vacinas - BoviMonitor{% endblock %}
+
+{% block content %}
+
+<h2>Histórico de Vacinas e Medicamentos</h2>
+
+{% if vacinas %}
+
+<table>
+
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Dias de Carência</th>
+            <th>Obrigatória</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for vacina in vacinas %}
+
+        <tr>
+
+            <td>
+                <strong>{{ vacina.nome }}</strong>
+            </td>
+
+            <td>
+                {{ vacina.tipo }}
+            </td>
+
+            <td>
+                {{ vacina.dias_carencia }} dias
+            </td>
+
+            <td>
+                {% if vacina.obrigatoria == 'sim' %}
+                    Sim
+                {% else %}
+                    Não
+                {% endif %}
+            </td>
+
+            <td>
+
+                <a
+                    href="{{ url_for('editar_vacina', id=vacina.id) }}"
+                    class="btn-edit">
+                    Editar
+                </a>
+
+                <form
+                    action="{{ url_for('deletar_vacina', id=vacina.id) }}"
+                    method="POST"
+                    style="display:inline;">
+
+                    <button
+                        type="submit"
+                        class="btn-delete"
+                        onclick="return confirm('Tem certeza que deseja excluir esta vacina?')">
+                        Excluir
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% else %}
+
+<p>Nenhuma vacina ou medicamento cadastrado até o momento.</p>
+
+{% endif %}
+
+{% endblock %}

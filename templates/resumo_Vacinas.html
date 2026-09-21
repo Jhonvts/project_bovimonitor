@@ -1,0 +1,52 @@
+
+
+{% extends 'base.html' %}
+
+{% block title %}Resumo de Vacinas - BoviMonitor{% endblock %}
+
+{% block content %}
+
+<h1>Resumo de Vacinas</h1>
+
+<div class="dashboard-grid">
+
+    <div class="card">
+        <h3>Total de Vacinas</h3>
+        <div class="number">
+            {{ metrics.total_vacinas }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Total de Medicamentos</h3>
+        <div class="number">
+            {{ metrics.total_medicamentos }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Vacinas Obrigatórias</h3>
+        <div class="number">
+            {{ metrics.vacinas_obrigatorias }}
+        </div>
+    </div>
+
+    <div class="card alert">
+        <h3>Vacinas com Carência</h3>
+        <div class="number">
+            {{ metrics.vacinas_com_carencia }}
+        </div>
+    </div>
+
+</div>
+
+<p>
+    <a
+        href="{{ url_for('cadastro_vacina') }}"
+        class="btn-submit"
+        style="text-decoration:none; display:inline-block; width:auto;">
+        + Cadastrar Nova Vacina
+    </a>
+</p>
+
+{% endblock %}

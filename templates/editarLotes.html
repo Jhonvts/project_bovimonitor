@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Lote - BoviMonitor{% endblock %}
+
+{% block content %}
+
+<h1>Editar Lote</h1>
+
+<p>Atualize as informações do lote cadastrado.</p>
+
+<hr>
+
+<h2>Editar Dados do Lote</h2>
+
+<form method="POST">
+
+    <label for="nome">Nome do lote:</label>
+
+    <input
+        type="text"
+        id="nome"
+        name="nome"
+        value="{{ lote.nome }}"
+        required
+    >
+
+    <br><br>
+
+    <label for="quantidade">Quantidade de cabeças:</label>
+
+    <input
+        type="number"
+        id="quantidade"
+        name="quantidade"
+        value="{{ lote.quantidade }}"
+        min="0"
+        required
+    >
+
+    <br><br>
+
+    <label for="tendas">Tendas/Áreas:</label>
+
+    <input
+        type="number"
+        id="tendas"
+        name="tendas"
+        value="{{ lote.tendas }}"
+        min="0"
+    >
+
+    <br><br>
+
+    <label for="status">Status:</label>
+
+    <select id="status" name="status">
+
+        <option value="ativo"
+            {% if lote.status == 'ativo' %}selected{% endif %}>
+            Ativo
+        </option>
+
+        <option value="inativo"
+            {% if lote.status == 'inativo' %}selected{% endif %}>
+            Inativo
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">Salvar Alterações</button>
+
+    <a href="{{ url_for('registro_lotes') }}">Cancelar</a>
+
+</form>
+
+{% endblock %}
