@@ -1,117 +1,119 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Lotes</title>
-</head>
+{% block title %}Registro de Lotes - BoviMonitor{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>Registro de Lotes de Gado</h1>
+<h1>Registro de Lotes de Gado</h1>
 
-    <p>
-        Cadastre os lotes e registre a quantidade de cabeças de gado.
-    </p>
+<p>
+    Cadastre os lotes e registre a quantidade de cabeças de gado.
+</p>
 
-    <hr>
+<hr>
 
-    <h2>Cadastrar Novo Lote</h2>
+<h2>Cadastrar Novo Lote</h2>
 
-    <form>
+<form method="POST">
 
-        <label for="nome">Nome do lote:</label>
-        <input
-            type="text"
-            id="nome"
-            name="nome"
-            placeholder="Ex.: Lote 01"
-            required
-        >
+    <label for="nome">Nome do lote:</label>
 
-        <br><br>
+    <input
+        type="text"
+        id="nome"
+        name="nome"
+        placeholder="Ex.: Lote 01"
+        required
+    >
 
-        <label for="quantidade">Quantidade de cabeças:</label>
-        <input
-            type="number"
-            id="quantidade"
-            name="quantidade"
-            placeholder="Ex.: 100"
-            min="0"
-            required
-        >
+    <br><br>
 
-        <br><br>
+    <label for="quantidade">Quantidade de cabeças:</label>
 
-        <label for="tendas">Tendas/Áreas:</label>
-        <input
-            type="number"
-            id="tendas"
-            name="tendas"
-            placeholder="Ex.: 2"
-            min="0"
-        >
+    <input
+        type="number"
+        id="quantidade"
+        name="quantidade"
+        placeholder="Ex.: 100"
+        min="0"
+        required
+    >
 
-        <br><br>
+    <br><br>
 
-        <label for="status">Status:</label>
-        <select id="status" name="status">
-            <option value="ativo">Ativo</option>
-            <option value="inativo">Inativo</option>
-        </select>
+    <label for="tendas">Tendas/Áreas:</label>
 
-        <br><br>
+    <input
+        type="number"
+        id="tendas"
+        name="tendas"
+        placeholder="Ex.: 2"
+        min="0"
+    >
 
-        <button type="submit">Registrar Lote</button>
+    <br><br>
 
-    </form>
+    <label for="status">Status:</label>
 
-    <hr>
+    <select id="status" name="status">
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+    </select>
 
-    <h2>Lotes Registrados</h2>
+    <br><br>
 
-    <table border="1">
+    <button type="submit">Registrar Lote</button>
 
-        <thead>
-            <tr>
-                <th>Nome do Lote</th>
-                <th>Quantidade de Cabeças</th>
-                <th>Tendas/Áreas</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
+</form>
 
-        <tbody>
+<hr>
 
-            <tr>
-                <td>Lote 01</td>
-                <td>100</td>
-                <td>2</td>
-                <td>Ativo</td>
-                <td>
-                    <button>Editar</button>
-                    <button>Excluir</button>
-                </td>
-            </tr>
+<h2>Lotes Registrados</h2>
 
-            <tr>
-                <td>Lote 02</td>
-                <td>75</td>
-                <td>1</td>
-                <td>Ativo</td>
-                <td>
-                    <button>Editar</button>
-                    <button>Excluir</button>
-                </td>
-            </tr>
+<table border="1">
 
-        </tbody>
+    <thead>
+        <tr>
+            <th>Nome do Lote</th>
+            <th>Quantidade de Cabeças</th>
+            <th>Tendas/Áreas</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
 
-    </table>
+    <tbody>
 
-</body>
+        {% for lote in lotes %}
 
-</html>
+        <tr>
+            <td>{{ lote.nome }}</td>
+            <td>{{ lote.quantidade }}</td>
+            <td>{{ lote.tendas }}</td>
+            <td>{{ lote.status }}</td>
 
+            <td>
+                <a href="{{ url_for('editar_lote', id=lote.id) }}">
+                    <button type="button">Editar</button>
+                </a>
+
+                <form action="{{ url_for('excluir_lote', id=lote.id) }}"
+                      method="POST"
+                      style="display:inline;">
+
+                    <button type="submit"
+                            onclick="return confirm('Tem certeza que deseja excluir este lote?')">
+                        Excluir
+                    </button>
+
+                </form>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}
