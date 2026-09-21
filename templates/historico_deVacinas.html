@@ -1,49 +1,87 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<h2>Histórico de Tratamentos Sanitários</h2>
+{% block title %}Histórico de Vacinas - BoviMonitor{% endblock %}
 
-{% if registros %}
+{% block content %}
+
+<h2>Histórico de Vacinas e Medicamentos</h2>
+
+{% if vacinas %}
+
 <table>
+
     <thead>
         <tr>
-            <th>Brinco</th>
-            <th>Vacina</th>
-            <th>Peso</th>
-            <th>Dose (mL)</th>
-            <th>Custo (R$)</th>
-            <th>Aplicação</th>
-            <th>Próx. Reforço</th>
-            <th>Status Sanitário</th>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Dias de Carência</th>
+            <th>Obrigatória</th>
             <th>Ações</th>
         </tr>
     </thead>
+
     <tbody>
-        {% for reg in registros %}
+
+        {% for vacina in vacinas %}
+
         <tr>
-            <td><strong>{{ reg.brinco }}</strong></td>
-            <td>{{ reg.vacina }}</td>
-            <td>{{ reg.peso_kg }} kg</td>
-            <td>{{ reg.dosagem_ml }} mL</td>
-            <td>R$ {{ reg.custo_total_animal }}</td>
-            <td>{{ reg.data_aplicacao_fmt }}</td>
-            <td>{{ reg.data_reforco_fmt }}</td>
+
             <td>
-                <span class="badge {{ reg.status_class }}">
-                    {{ reg.status_label }}
-                </span>
+                <strong>{{ vacina.nome }}</strong>
             </td>
+
             <td>
-                <a href="{{ url_for('editar_manejo', id=reg.id) }}" class="btn-edit">Editar</a>
-                <form action="{{ url_for('deletar_manejo', id=reg.id) }}" method="POST" style="display:inline;">
-                    <button type="submit" class="btn-delete" onclick="return confirm('Tem certeza que deseja excluir este registro?')">Excluir</button>
+                {{ vacina.tipo }}
+            </td>
+
+            <td>
+                {{ vacina.dias_carencia }} dias
+            </td>
+
+            <td>
+                {% if vacina.obrigatoria == 'sim' %}
+                    Sim
+                {% else %}
+                    Não
+                {% endif %}
+            </td>
+
+            <td>
+
+                <a
+                    href="{{ url_for('editar_vacina', id=vacina.id) }}"
+                    class="btn-edit">
+                    Editar
+                </a>
+
+                <form
+                    action="{{ url_for('deletar_vacina', id=vacina.id) }}"
+                    method="POST"
+                    style="display:inline;">
+
+                    <button
+                        type="submit"
+                        class="btn-delete"
+                        onclick="return confirm('Tem certeza que deseja excluir esta vacina?')">
+                        Excluir
+                    </button>
+
                 </form>
+
             </td>
+
         </tr>
+
         {% endfor %}
+
     </tbody>
+
 </table>
+
 {% else %}
-<p>Nenhum registro sanitário cadastrado até o momento.</p>
+
+<p>Nenhuma vacina ou medicamento cadastrado até o momento.</p>
+
 {% endif %}
+
 {% endblock %}

@@ -1,41 +1,66 @@
 {% extends 'base.html' %}
 
+{% block title %}Cadastrar Vacina - BoviMonitor{% endblock %}
+
 {% block content %}
+
 <div class="form-card">
-    <h2>Registrar Manejo Sanitário / Vacinação</h2>
-    <form action="{{ url_for('registrar_manejo') }}" method="POST">
+
+    <h2>Cadastrar Vacina ou Medicamento</h2>
+
+    <form action="{{ url_for('cadastro_vacina') }}" method="POST">
+
         <div class="form-group">
-            <label for="brinco">Identificação do Animal (Brinco/ID) </label>
-            <input type="text" id="brinco" name="brinco" placeholder="Ex: BOV-1024" required>
+            <label for="nome">Nome da vacina ou medicamento</label>
+
+            <input
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Ex.: Vacina contra Febre Aftosa"
+                required
+            >
         </div>
 
         <div class="form-group">
-            <label for="peso">Peso Vivo (kg) </label>
-            <input type="number" id="peso" name="peso" step="0.1" min="1" placeholder="Ex: 450.0" required>
-        </div>
+            <label for="tipo">Tipo</label>
 
-        <div class="form-group">
-            <label for="vacina">Vacina / Insumo </label>
-            <select id="vacina" name="vacina" required>
+            <select id="tipo" name="tipo" required>
                 <option value="">Selecione...</option>
-                <option value="Aftosa">Aftosa</option>
-                <option value="Brucelose">Brucelose</option>
-                <option value="Raiva Bovina">Raiva Bovina</option>
-                <option value="Vermífugo/Antiparasitário">Vermífugo/Antiparasitário</option>
+                <option value="Vacina">Vacina</option>
+                <option value="Medicamento">Medicamento</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="custo_ml">Custo do Insumo (R$ por mL) </label>
-            <input type="number" id="custo_ml" name="custo_ml" step="0.01" min="0" placeholder="Ex: 1.50" required>
+            <label for="dias_carencia">Dias de carência</label>
+
+            <input
+                type="number"
+                id="dias_carencia"
+                name="dias_carencia"
+                min="0"
+                placeholder="Ex.: 30"
+                required
+            >
         </div>
 
         <div class="form-group">
-            <label for="data_aplicacao">Data da Aplicação </label>
-            <input type="date" id="data_aplicacao" name="data_aplicacao" required>
+            <label for="obrigatoria">Vacina obrigatória?</label>
+
+            <select id="obrigatoria" name="obrigatoria" required>
+                <option value="">Selecione...</option>
+                <option value="sim">Sim</option>
+                <option value="nao">Não</option>
+            </select>
         </div>
 
-        <button type="submit" class="btn-submit">Calcular Dosagem & Salvar</button>
+        <button type="submit" class="btn-submit">
+            Cadastrar
+        </button>
+
     </form>
+
 </div>
+
 {% endblock %}

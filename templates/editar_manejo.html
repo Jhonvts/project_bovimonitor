@@ -1,41 +1,86 @@
 {% extends 'base.html' %}
 
+{% block title %}Editar Vacina - BoviMonitor{% endblock %}
+
 {% block content %}
+
 <div class="form-card">
-    <h2>Editar Manejo Sanitário</h2>
-    <form action="{{ url_for('editar_manejo', id=registro.id) }}" method="POST">
+
+    <h2>Editar Vacina ou Medicamento</h2>
+
+    <form action="{{ url_for('editar_vacina', id=vacina.id) }}" method="POST">
+
         <div class="form-group">
-            <label for="brinco">Identificação do Animal (Brinco/ID)</label>
-            <input type="text" id="brinco" name="brinco" value="{{ registro.brinco }}" required>
+            <label for="nome">Nome da vacina ou medicamento</label>
+
+            <input
+                type="text"
+                id="nome"
+                name="nome"
+                value="{{ vacina.nome }}"
+                required
+            >
         </div>
 
         <div class="form-group">
-            <label for="peso">Peso Vivo (kg)</label>
-            <input type="number" id="peso" name="peso" step="0.1" min="1" value="{{ registro.peso_kg }}" required>
-        </div>
+            <label for="tipo">Tipo</label>
 
-        <div class="form-group">
-            <label for="vacina">Vacina / Insumo</label>
-            <select id="vacina" name="vacina" required>
-                <option value="Aftosa" {% if registro.vacina == 'Aftosa' %}selected{% endif %}>Aftosa</option>
-                <option value="Brucelose" {% if registro.vacina == 'Brucelose' %}selected{% endif %}>Brucelose</option>
-                <option value="Raiva Bovina" {% if registro.vacina == 'Raiva Bovina' %}selected{% endif %}>Raiva Bovina</option>
-                <option value="Vermífugo/Antiparasitário" {% if registro.vacina == 'Vermífugo/Antiparasitário' %}selected{% endif %}>Vermífugo/Antiparasitário</option>
+            <select id="tipo" name="tipo" required>
+
+                <option value="Vacina"
+                    {% if vacina.tipo == 'Vacina' %}selected{% endif %}>
+                    Vacina
+                </option>
+
+                <option value="Medicamento"
+                    {% if vacina.tipo == 'Medicamento' %}selected{% endif %}>
+                    Medicamento
+                </option>
+
             </select>
         </div>
 
         <div class="form-group">
-            <label for="custo_ml">Custo do Insumo (R$ por mL)</label>
-            <input type="number" id="custo_ml" name="custo_ml" step="0.01" min="0" value="{{ registro.custo_ml }}" required>
+            <label for="dias_carencia">Dias de carência</label>
+
+            <input
+                type="number"
+                id="dias_carencia"
+                name="dias_carencia"
+                value="{{ vacina.dias_carencia }}"
+                min="0"
+                required
+            >
         </div>
 
         <div class="form-group">
-            <label for="data_aplicacao">Data da Aplicação</label>
-            <input type="date" id="data_aplicacao" name="data_aplicacao" value="{{ registro.data_aplicacao_raw }}" required>
+            <label for="obrigatoria">Vacina obrigatória?</label>
+
+            <select id="obrigatoria" name="obrigatoria" required>
+
+                <option value="sim"
+                    {% if vacina.obrigatoria == 'sim' %}selected{% endif %}>
+                    Sim
+                </option>
+
+                <option value="nao"
+                    {% if vacina.obrigatoria == 'nao' %}selected{% endif %}>
+                    Não
+                </option>
+
+            </select>
         </div>
 
-        <button type="submit" class="btn-submit">Atualizar Registro</button>
-        <a href="{{ url_for('historico') }}" class="btn-cancel">Cancelar</a>
+        <button type="submit" class="btn-submit">
+            Salvar Alterações
+        </button>
+
+        <a href="{{ url_for('historico_vacinas') }}" class="btn-cancel">
+            Cancelar
+        </a>
+
     </form>
+
 </div>
+
 {% endblock %}
