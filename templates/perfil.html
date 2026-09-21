@@ -1,0 +1,127 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BoviMonitor - Meu Perfil</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header>
+
+        <h1>🐄 BoviMonitor</h1>
+
+        <nav>
+
+            <a href="/perfil">
+                Meu Perfil
+            </a>
+
+            <a href="/perfil/editar">
+                Editar Perfil
+            </a>
+
+            <a href="/logout">
+                Sair
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <main class="container">
+
+        <section class="card">
+
+            <h2>Meu Perfil</h2>
+
+            <p class="descricao">
+                Confira suas informações cadastradas no BoviMonitor.
+            </p>
+
+
+            <div class="perfil-info">
+
+                <h3>Dados pessoais</h3>
+
+                <p>
+                    <strong>Nome:</strong>
+                    {{ usuario.nome }}
+                </p>
+
+                <p>
+                    <strong>CPF:</strong>
+                    {{ usuario.cpf }}
+                </p>
+
+                <p>
+                    <strong>Telefone:</strong>
+                    {{ usuario.telefone }}
+                </p>
+
+                <p>
+                    <strong>E-mail:</strong>
+                    {{ usuario.email }}
+                </p>
+
+
+                <h3>Dados da propriedade</h3>
+
+                <p>
+                    <strong>Propriedade:</strong>
+                    {{ usuario.propriedade }}
+                </p>
+
+                <p>
+                    <strong>Localização:</strong>
+                    {{ usuario.localizacao }}
+                </p>
+
+                <p>
+                    <strong>Área:</strong>
+                    {{ usuario.area }} hectares
+                </p>
+
+            </div>
+
+
+            <div class="acoes">
+
+                <a href="/perfil/editar">
+                    <button type="button">
+                        Atualizar Perfil
+                    </button>
+                </a>
+
+                <a href="/logout">
+                    <button type="button">
+                        Sair da Conta
+                    </button>
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            BoviMonitor - Sistema de Controle Sanitário e Manejo de Rebanhos
+        </p>
+
+    </footer>
+
+</body>
+
+</html>
