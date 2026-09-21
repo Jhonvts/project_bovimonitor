@@ -249,7 +249,7 @@ def cadastro():
         )
 
         return redirect(
-            url_for("perfil")
+            url_for("inicio ")
         )
 
     return render_template(
@@ -281,7 +281,7 @@ def login():
             login_user(usuario)
 
             return redirect(
-                url_for("perfil")
+                url_for("inicio")
             )
 
         flash(
@@ -311,6 +311,15 @@ def logout():
         url_for("login")
     )
 
+# ==========================================================
+# PÁGINA INICIAL
+# ==========================================================
+
+@app.route("/inicio")
+@login_required
+def inicio():
+
+    return render_template("inicio.html")
 
 # ==========================================================
 # PERFIL
@@ -354,6 +363,26 @@ def editar_perfil():
         usuario=current_user
     )
 
+# ==========================================================
+# EXCLUIR PERFIL
+# ==========================================================
+
+@app.route("/perfil/excluir", methods=["GET", "POST"])
+@login_required
+def excluir_perfil():
+
+    if request.method == "POST":
+
+        db.session.delete(current_user)
+        db.session.commit()
+
+        logout_user()
+
+        flash("Perfil excluído com sucesso!")
+
+        return redirect(url_for("login"))
+
+    return render_template("excluirPerfil.html")
 
 # ==========================================================
 # LOTES
