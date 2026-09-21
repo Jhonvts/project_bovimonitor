@@ -56,8 +56,8 @@ class Usuario(UserMixin, db.Model):
         nullable=False
     )
 
-    cpf = db.Column(
-        db.String(14),
+    email = db.Column(
+        db.String(150),
         unique=True,
         nullable=False
     )
@@ -67,18 +67,35 @@ class Usuario(UserMixin, db.Model):
         nullable=False
     )
 
-    email = db.Column(
-        db.String(150),
-        unique=True,
-        nullable=False
-    )
-
     senha = db.Column(
         db.String(255),
         nullable=False
     )
 
-    propriedade = db.Column(
+    perfil = db.Column(
+        db.String(20),
+        nullable=False,
+        default="usuario"
+    )
+
+# ==========================================================
+#                         PROPRIEDADE
+# ==========================================================
+
+class Propriedade(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("usuario.id"),
+        nullable=False
+    )
+
+    nome = db.Column(
         db.String(150),
         nullable=False
     )
@@ -89,15 +106,9 @@ class Usuario(UserMixin, db.Model):
     )
 
     area = db.Column(
-        db.Float
+        db.Float,
+        nullable=False
     )
-
-    perfil = db.Column(
-        db.String(20),
-        nullable=False,
-        default="usuario"
-    )
-
 
 # ==========================================================
 #                         LOTE
@@ -241,19 +252,11 @@ def cadastro():
 
         nome = request.form["nome"]
 
-        cpf = request.form["cpf"]
+        email = request.form["email"]
 
         telefone = request.form["telefone"]
 
-        email = request.form["email"]
-
         senha = request.form["senha"]
-
-        propriedade = request.form["propriedade"]
-
-        localizacao = request.form["localizacao"]
-
-        area = request.form.get("area") or None
 
 
         usuario_existente = Usuario.query.filter_by(
@@ -270,20 +273,6 @@ def cadastro():
             )
 
 
-        cpf_existente = Usuario.query.filter_by(
-            cpf=cpf
-        ).first()
-
-
-        if cpf_existente:
-
-            flash("Este CPF já está cadastrado.")
-
-            return redirect(
-                url_for("cadastro")
-            )
-
-
         senha_hash = generate_password_hash(
             senha
         )
@@ -293,19 +282,11 @@ def cadastro():
 
             nome=nome,
 
-            cpf=cpf,
+            email=email,
 
             telefone=telefone,
 
-            email=email,
-
-            senha=senha_hash,
-
-            propriedade=propriedade,
-
-            localizacao=localizacao,
-
-            area=area
+            senha=senha_hash
 
         )
 
@@ -397,20 +378,83 @@ def logout():
 @login_required
 def perfil():
 
+    propriedade = Propriedade.query.filter_by(
+        usuario_id=current_user.id
+    ).first()
+
     return render_template(
         "perfil.html",
-        usuario=current_user
+        usuario=current_user,
+        propriedade=propriedade
     )
 
+# ==========================================================
+#                         PROPRIEDADE
+# ==========================================================
+
+@app.route("/propriedade/cadastrar", methods=["GET", "POST"])
+@login_required
+def cadastrar_propriedade():
+
+    if request.method == "POST":
+
+        nome = request.form["nome"]
+
+        localizacao = request.form["localizacao"]
+
+        area = request.form["area"]
+
+
+        propriedade_existente = Propriedade.query.filter_by(
+            usuario_id=current_user.id
+        ).first()
+
+
+        if propriedade_existente:
+
+            flash("Você já possui uma propriedade cadastrada.")
+
+            return redirect(
+                url_for("perfil")
+            )
+
+
+        nova_propriedade = Propriedade(
+
+            usuario_id=current_user.id,
+
+            nome=nome,
+
+            localizacao=localizacao,
+
+            area=area
+
+        )
+
+
+        db.session.add(
+            nova_propriedade
+        )
+
+        db.session.commit()
+
+
+        flash("Propriedade cadastrada com sucesso!")
+
+        return redirect(
+            url_for("perfil")
+        )
+
+
+    return render_template(
+        "cadastro_propriedade.html"
+    )
 
 # ==========================================================
 #                    EDITAR PERFIL
 # ==========================================================
 
-@app.route(
-    "/perfil/editar",
-    methods=["GET", "POST"]
-)
+@app.route("/perfil/editar", methods=["GET", "POST"])
 @login_required
 def editar_perfil():
 
@@ -420,19 +464,9 @@ def editar_perfil():
 
         current_user.telefone = request.form["telefone"]
 
-        current_user.propriedade = request.form["propriedade"]
-
-        current_user.localizacao = request.form["localizacao"]
-
-        current_user.area = request.form.get("area") or None
-
-
         db.session.commit()
 
-
-        flash(
-            "Perfil atualizado com sucesso!"
-        )
+        flash("Perfil atualizado com sucesso!")
 
         return redirect(
             url_for("perfil")

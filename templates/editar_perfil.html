@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BoviMonitor - Editar Perfil</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>🐄 BoviMonitor</h1>
+
+    </header>
+
+
+    <main class="container">
+
+        <section class="card">
+
+            <h2>Editar Perfil</h2>
+
+
+            <form action="/perfil/editar"
+                  method="POST">
+
+
+                <div class="campo">
+
+                    <label for="nome">
+                        Nome
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        value="{{ usuario.nome }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="telefone">
+                        Celular
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="telefone"
+                        name="telefone"
+                        value="{{ usuario.telefone }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        E-mail
+                    </label>
+
+                    <input
+                        type="email"
+                        value="{{ usuario.email }}"
+                        disabled
+                    >
+
+                </div>
+
+
+                <button type="submit">
+                    Salvar alterações
+                </button>
+
+            </form>
+
+
+            <p>
+
+                <a href="/perfil">
+                    Voltar para o perfil
+                </a>
+
+            </p>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
