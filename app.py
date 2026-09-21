@@ -273,7 +273,7 @@ def cadastro():
         )
 
         return redirect(
-            url_for("login")
+            url_for("resumo_Vacinas")
         )
 
 
@@ -443,7 +443,7 @@ def lotes():
 
 
     return render_template(
-        "registro_lotes.html",
+        "registroLotes.html",
         lotes=lista_lotes
     )
 
@@ -496,7 +496,7 @@ def editar_lote(id):
 
 
     return render_template(
-        "editar_lote.html",
+        "editarLotes.html",
         lote=lote
     )
 
@@ -605,7 +605,8 @@ def cadastro_vacina():
 
 
     return render_template(
-        "cadastroManejoeVacinas.html"
+        "historico_deVacinas.html",
+        vacinas=lista_vacinas
     )
 
 
