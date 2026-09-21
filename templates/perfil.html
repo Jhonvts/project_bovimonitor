@@ -70,41 +70,6 @@
                     {{ usuario.telefone }}
                 </p>
 
-
-                <h3>Minha propriedade</h3>
-
-
-                {% if propriedade %}
-
-                    <p>
-                        <strong>Nome:</strong>
-                        {{ propriedade.nome }}
-                    </p>
-
-                    <p>
-                        <strong>Localização:</strong>
-                        {{ propriedade.localizacao }}
-                    </p>
-
-                    <p>
-                        <strong>Área:</strong>
-                        {{ propriedade.area }} hectares
-                    </p>
-
-                {% else %}
-
-                    <p>
-                        Você ainda não cadastrou uma propriedade.
-                    </p>
-
-                    <a href="/propriedade/cadastrar">
-                        <button type="button">
-                            + Cadastrar propriedade
-                        </button>
-                    </a>
-
-                {% endif %}
-
             </div>
 
 
