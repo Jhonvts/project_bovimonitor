@@ -31,16 +31,14 @@ body {
   min-height: 100vh;
 }
 
-/* ==========================================================================
-   LAYOUT GERAL E SIDEBAR (MENU LATERAL)
-   ========================================================================== */
-
+/* Layout Geral e Container */
 .container, .dashboard-layout {
   display: flex;
   width: 100%;
   min-height: 100vh;
 }
 
+/* Sidebar / Menu Lateral */
 .sidebar {
   width: 280px;
   background: linear-gradient(180deg, var(--agro-primary) 0%, #081c15 100%);
@@ -52,25 +50,12 @@ body {
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
 }
 
-.logo, .sidebar-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
 .logo h1, .sidebar-header h2 {
   font-size: 22px;
   color: var(--agro-light);
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  letter-spacing: 0.5px;
-}
-
-.menu, .sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 .menu a, .sidebar-nav a {
@@ -84,6 +69,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 8px;
 }
 
 .menu a:hover, .sidebar-nav a:hover, .menu a.active, .sidebar-nav a.active {
@@ -93,10 +79,7 @@ body {
   box-shadow: 0 4px 10px rgba(45, 106, 79, 0.3);
 }
 
-/* ==========================================================================
-   CONTEÚDO PRINCIPAL E CABEÇALHO
-   ========================================================================== */
-
+/* Conteúdo Principal */
 .main, .main-content {
   flex: 1;
   display: flex;
@@ -122,26 +105,7 @@ body {
   color: var(--agro-primary);
 }
 
-.header button, .btn-primary {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: var(--agro-secondary);
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.header button:hover, .btn-primary:hover {
-  background: var(--agro-primary);
-  transform: translateY(-2px);
-}
-
-/* ==========================================================================
-   CARDS DE INDICADORES (DASHBOARD)
-   ========================================================================== */
-
+/* Cards de Indicadores */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -158,18 +122,12 @@ body {
   gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-top: 4px solid var(--agro-accent);
-  transition: transform 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-4px);
 }
 
 .card h3 {
   font-size: 14px;
   color: var(--agro-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .card h2 {
@@ -178,46 +136,19 @@ body {
   font-weight: 700;
 }
 
-/* ==========================================================================
-   TABELAS E LISTAGENS (Lotes, Vacinas e Manejos)
-   ========================================================================== */
-
+/* Tabelas e Listagens */
 .table-container {
   background: var(--agro-card-bg);
   padding: 25px;
   border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.table-header input, .form-control {
-  padding: 10px 15px;
-  border: 1px solid var(--agro-border);
-  border-radius: 8px;
-  width: 300px;
-  outline: none;
-  transition: border-color 0.3s;
-}
-
-.table-header input:focus, .form-control:focus {
-  border-color: var(--agro-secondary);
-  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  margin-top: 15px;
 }
 
 th, td {
@@ -231,17 +162,13 @@ th {
   font-weight: 600;
   text-transform: uppercase;
   font-size: 13px;
-  letter-spacing: 0.5px;
 }
 
 tr:hover {
   background-color: #fcfdfc;
 }
 
-/* ==========================================================================
-   STATUS E ETAGENS (Carência, Bloqueado, Obrigatória)
-   ========================================================================== */
-
+/* Status */
 .status {
   padding: 6px 14px;
   border-radius: 20px;
@@ -249,101 +176,16 @@ tr:hover {
   font-size: 12px;
   font-weight: 600;
   display: inline-block;
-  text-align: center;
 }
 
-.status.liberado, .status.ativo {
-  background: var(--agro-success);
-}
+.status.liberado, .status.ativo { background: var(--agro-success); }
+.status.bloqueado, .status.carencia { background: var(--agro-danger); }
+.status.pendente { background: var(--agro-warning); }
 
-.status.bloqueado, .status.carencia {
-  background: var(--agro-danger);
-}
-
-.status.pendente {
-  background: var(--agro-warning);
-}
-
-/* ==========================================================================
-   FORMULÁRIOS (Telas de Cadastro e Edição)
-   ========================================================================== */
-
-.form-container {
-  background: var(--agro-card-bg);
-  padding: 35px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  max-width: 700px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.form-group {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-group label {
-  font-weight: 600;
-  color: var(--agro-primary);
-  font-size: 14px;
-}
-
-.form-group input, .form-group select {
-  padding: 12px;
-  border: 1px solid var(--agro-border);
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  background-color: #fff;
-}
-
-.form-group input:focus, .form-group select:focus {
-  border-color: var(--agro-secondary);
-  box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
-}
-
-/* ==========================================================================
-   RESPONSIVIDADE (Ajustes para Celulares e Tablets)
-   ========================================================================== */
-
+/* Responsividade */
 @media (max-width: 900px) {
-  body, .container, .dashboard-layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 20px;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin-bottom: 0;
-  }
-
-  .menu, .sidebar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .menu a, .sidebar-nav a {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-
-  .main, .main-content {
-    padding: 15px;
-  }
-
-  .table-header input {
-    width: 100%;
-  }
+  body, .container, .dashboard-layout { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; padding: 15px 20px; }
+  .menu, .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+  .main, .main-content { padding: 15px; }
 }
