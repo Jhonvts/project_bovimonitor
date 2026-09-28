@@ -1,774 +1,125 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import (
-    LoginManager,
-    UserMixin,
-    login_user,
-    logout_user,
-    login_required,
-    current_user
-)
-from werkzeug.security import generate_password_hash, check_password_hash
-
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
+app.secret_key = 'bovimonitor_agro_secret'  # Necessário para validações e mensagens Flash
 
+# Banco de dados em memória para simulação
+historico_vacinas = []
 
-# ==========================================================
-#                    CONFIGURAÇÃO
-# ==========================================================
+def calcular_status(data_reforco_str):
+    """Calcula se a revacinação está Em dia (verde), Próxima (amarelo) ou Vencida (vermelho)."""
+    hoje = datetime.now().date()
+    data_reforco = datetime.strptime(data_reforco_str, '%Y-%m-%d').date()
+    dias_restantes = (data_reforco - hoje).days
 
-app.config["SECRET_KEY"] = "bovimonitor_secret_key"
+    if dias_restantes < 0:
+        return 'status-vencida', 'Vencida/Pendente'
+    elif dias_restantes <= 30:
+        return 'status-proxima', f'Próxima ({dias_restantes} dias)'
+    else:
+        return 'status-em-dia', 'Em Dia'
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bovimonitor.db"
-
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-
-db = SQLAlchemy(app)
-
-
-# ==========================================================
-#                  CONFIGURAÇÃO DO LOGIN
-# ==========================================================
-
-login_manager = LoginManager(app)
-
-login_manager.login_view = "login"
-
-login_manager.login_message = "Faça login para acessar essa página."
-
-
-# ==========================================================
-#                       USUÁRIO
-# ==========================================================
-
-class Usuario(UserMixin, db.Model):
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    nome = db.Column(
-        db.String(100),
-        nullable=False
-    )
-
-    email = db.Column(
-        db.String(150),
-        unique=True,
-        nullable=False
-    )
-
-    telefone = db.Column(
-        db.String(20),
-        nullable=False
-    )
-
-    senha = db.Column(
-        db.String(255),
-        nullable=False
-    )
-
-    perfil = db.Column(
-        db.String(20),
-        nullable=False,
-        default="usuario"
-    )
-
-
-# ==========================================================
-#                         LOTE
-# ==========================================================
-
-class Lote(db.Model):
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    usuario_id = db.Column(
-        db.Integer,
-        db.ForeignKey("usuario.id"),
-        nullable=False
-    )
-
-    nome = db.Column(
-        db.String(100),
-        nullable=False
-    )
-
-    quantidade_cabecas = db.Column(
-        db.Integer,
-        nullable=False
-    )
-
-    status = db.Column(
-        db.String(20),
-        nullable=False,
-        default="ATIVO"
-    )
-
-
-# ==========================================================
-#                  VACINA / MEDICAMENTO
-# ==========================================================
-
-class Vacina(db.Model):
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    nome = db.Column(
-        db.String(100),
-        nullable=False
-    )
-
-    tipo = db.Column(
-        db.String(20),
-        nullable=False
-    )
-
-    dias_carencia = db.Column(
-        db.Integer,
-        nullable=False,
-        default=0
-    )
-
-    obrigatoria = db.Column(
-        db.Boolean,
-        nullable=False,
-        default=False
-    )
-
-
-# ==========================================================
-#                   MANEJO SANITÁRIO
-# ==========================================================
-
-class ManejoSanitario(db.Model):
-
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
-
-    lote_id = db.Column(
-        db.Integer,
-        db.ForeignKey("lote.id"),
-        nullable=False
-    )
-
-    vacina_id = db.Column(
-        db.Integer,
-        db.ForeignKey("vacina.id"),
-        nullable=False
-    )
-
-    data_aplicacao = db.Column(
-        db.Date,
-        nullable=False
-    )
-
-    data_liberacao = db.Column(
-        db.Date,
-        nullable=False
-    )
-
-    observacao = db.Column(
-        db.Text
-    )
-
-
-# ==========================================================
-#                  GERENCIADOR DE LOGIN
-# ==========================================================
-
-@login_manager.user_loader
-def carregar_usuario(user_id):
-
-    return db.session.get(
-        Usuario,
-        int(user_id)
-    )
-
-
-# ==========================================================
-#                    PÁGINA INICIAL
-# ==========================================================
-
-@app.route("/")
+@app.route('/')
 def index():
-
-    return redirect(
-        url_for("login")
-    )
-
-
-# ==========================================================
-#                       CADASTRO
-# ==========================================================
-
-@app.route("/cadastro", methods=["GET", "POST"])
-def cadastro():
-
-    if request.method == "POST":
-
-        nome = request.form["nome"]
-
-        email = request.form["email"]
-
-        telefone = request.form["telefone"]
-
-        senha = request.form["senha"]
-
-
-        usuario_existente = Usuario.query.filter_by(
-            email=email
-        ).first()
-
-
-        if usuario_existente:
-
-            flash(
-                "Este e-mail já está cadastrado."
-            )
-
-            return redirect(
-                url_for("cadastro")
-            )
-
-
-        senha_hash = generate_password_hash(
-            senha
-        )
-
-
-        novo_usuario = Usuario(
-
-            nome=nome,
-
-            email=email,
-
-            telefone=telefone,
-
-            senha=senha_hash
-
-        )
-
-
-        db.session.add(
-            novo_usuario
-        )
-
-        db.session.commit()
-
-
-        flash(
-            "Cadastro realizado com sucesso!"
-        )
-
-        return redirect(
-            url_for("resumo_Vacinas")
-        )
-
-
-    return render_template(
-        "cadastro.html"
-    )
-
-
-# ==========================================================
-#                         LOGIN
-# ==========================================================
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-
-    if request.method == "POST":
-
-        email = request.form["email"]
-
-        senha = request.form["senha"]
-
-
-        usuario = Usuario.query.filter_by(
-            email=email
-        ).first()
-
-
-        if usuario and check_password_hash(
-            usuario.senha,
-            senha
-        ):
-
-            login_user(usuario)
-
-            return redirect(
-                url_for("perfil")
-            )
-
-
-        flash(
-            "E-mail ou senha incorretos!"
-        )
-
-
-    return render_template(
-        "login.html"
-    )
-
-
-# ==========================================================
-#                         LOGOUT
-# ==========================================================
-
-@app.route("/logout")
-@login_required
-def logout():
-
-    logout_user()
-
-    flash(
-        "Você saiu da sua conta."
-    )
-
-    return redirect(
-        url_for("login")
-    )
-
-
-# ==========================================================
-#                         PERFIL
-# ==========================================================
-
-@app.route("/perfil")
-@login_required
-def perfil():
-
-    return render_template(
-        "perfil.html",
-        usuario=current_user
-    )
-
-
-# ==========================================================
-#                    EDITAR PERFIL
-# ==========================================================
-
-@app.route("/perfil/editar", methods=["GET", "POST"])
-@login_required
-def editar_perfil():
-
-    if request.method == "POST":
-
-        current_user.nome = request.form["nome"]
-
-        current_user.telefone = request.form["telefone"]
-
-        db.session.commit()
-
-
-        flash(
-            "Perfil atualizado com sucesso!"
-        )
-
-
-        return redirect(
-            url_for("perfil")
-        )
-
-
-    return render_template(
-        "editar_perfil.html",
-        usuario=current_user
-    )
-
-
-# ==========================================================
-#                         LOTES
-# ==========================================================
-
-@app.route(
-    "/lotes",
-    methods=["GET", "POST"]
-)
-@login_required
-def lotes():
-
-    if request.method == "POST":
-
-        nome = request.form["nome"]
-
-        quantidade = request.form["quantidade"]
-
-
-        novo_lote = Lote(
-
-            usuario_id=current_user.id,
-
-            nome=nome,
-
-            quantidade_cabecas=quantidade,
-
-            status="ATIVO"
-
-        )
-
-
-        db.session.add(
-            novo_lote
-        )
-
-        db.session.commit()
-
-
-        flash(
-            "Lote cadastrado com sucesso!"
-        )
-
-
-        return redirect(
-            url_for("lotes")
-        )
-
-
-    lista_lotes = Lote.query.filter_by(
-        usuario_id=current_user.id
-    ).all()
-
-
-    return render_template(
-        "registroLotes.html",
-        lotes=lista_lotes
-    )
-
-
-# ==========================================================
-#                      EDITAR LOTE
-# ==========================================================
-
-@app.route(
-    "/lotes/<int:id>/editar",
-    methods=["GET", "POST"]
-)
-@login_required
-def editar_lote(id):
-
-    lote = Lote.query.get_or_404(id)
-
-
-    if lote.usuario_id != current_user.id:
-
-        flash(
-            "Você não pode editar este lote."
-        )
-
-        return redirect(
-            url_for("lotes")
-        )
-
-
-    if request.method == "POST":
-
-        lote.nome = request.form["nome"]
-
-        lote.quantidade_cabecas = request.form["quantidade"]
-
-        lote.status = request.form["status"]
-
-
-        db.session.commit()
-
-
-        flash(
-            "Lote atualizado com sucesso!"
-        )
-
-
-        return redirect(
-            url_for("lotes")
-        )
-
-
-    return render_template(
-        "editarLotes.html",
-        lote=lote
-    )
-
-
-# ==========================================================
-#                     EXCLUIR LOTE
-# ==========================================================
-
-@app.route(
-    "/lotes/<int:id>/excluir",
-    methods=["POST"]
-)
-@login_required
-def excluir_lote(id):
-
-    lote = Lote.query.get_or_404(id)
-
-
-    if lote.usuario_id != current_user.id:
-
-        flash(
-            "Você não pode excluir este lote."
-        )
-
-        return redirect(
-            url_for("lotes")
-        )
-
-
-    db.session.delete(
-        lote
-    )
-
-    db.session.commit()
-
-
-    flash(
-        "Lote excluído com sucesso!"
-    )
-
-
-    return redirect(
-        url_for("lotes")
-    )
-
-
-# ==========================================================
-#                CADASTRAR VACINA / MEDICAMENTO
-# ==========================================================
-
-@app.route(
-    "/vacinas/cadastro",
-    methods=["GET", "POST"]
-)
-@login_required
-def cadastro_vacina():
-
-    if request.method == "POST":
-
-        nome = request.form["nome"]
-
-        tipo = request.form["tipo"]
-
-        dias_carencia = request.form["dias_carencia"]
-
-        obrigatoria = request.form["obrigatoria"]
-
-
-        if obrigatoria == "sim":
-
-            obrigatoria = True
-
-        else:
-
-            obrigatoria = False
-
-
-        nova_vacina = Vacina(
-
-            nome=nome,
-
-            tipo=tipo,
-
-            dias_carencia=dias_carencia,
-
-            obrigatoria=obrigatoria
-
-        )
-
-
-        db.session.add(
-            nova_vacina
-        )
-
-        db.session.commit()
-
-
-        flash(
-            "Vacina ou medicamento cadastrado com sucesso!"
-        )
-
-
-        return redirect(
-            url_for("historico_vacinas")
-        )
-
-
-    return render_template(
-        "historico_deVacinas.html",
-        vacinas=lista_vacinas
-    )
-
-
-# ==========================================================
-#                   HISTÓRICO DE VACINAS
-# ==========================================================
-
-@app.route("/vacinas")
-@login_required
-def historico_vacinas():
-
-    lista_vacinas = Vacina.query.all()
-
-
-    return render_template(
-        "historico_deVacinas.html",
-        vacinas=lista_vacinas
-    )
-
-
-# ==========================================================
-#                    EDITAR VACINA
-# ==========================================================
-
-@app.route(
-    "/vacinas/<int:id>/editar",
-    methods=["GET", "POST"]
-)
-@login_required
-def editar_vacina(id):
-
-    vacina = Vacina.query.get_or_404(id)
-
-
-    if request.method == "POST":
-
-        vacina.nome = request.form["nome"]
-
-        vacina.tipo = request.form["tipo"]
-
-        vacina.dias_carencia = request.form["dias_carencia"]
-
-
-        if request.form["obrigatoria"] == "sim":
-
-            vacina.obrigatoria = True
-
-        else:
-
-            vacina.obrigatoria = False
-
-
-        db.session.commit()
-
-
-        flash(
-            "Vacina atualizada com sucesso!"
-        )
-
-
-        return redirect(
-            url_for("historico_vacinas")
-        )
-
-
-    return render_template(
-        "editar_manejo.html",
-        vacina=vacina
-    )
-
-
-# ==========================================================
-#                   EXCLUIR VACINA
-# ==========================================================
-
-@app.route(
-    "/vacinas/<int:id>/excluir",
-    methods=["POST"]
-)
-@login_required
-def deletar_vacina(id):
-
-    vacina = Vacina.query.get_or_404(id)
-
-
-    db.session.delete(
-        vacina
-    )
-
-    db.session.commit()
-
-
-    flash(
-        "Vacina excluída com sucesso!"
-    )
-
-
-    return redirect(
-        url_for("historico_vacinas")
-    )
-
-
-# ==========================================================
-#                     RESUMO DE VACINAS
-# ==========================================================
-
-@app.route("/vacinas/resumo")
-@login_required
-def resumo_vacinas():
-
-    total_vacinas = Vacina.query.filter_by(
-        tipo="Vacina"
-    ).count()
-
-
-    total_medicamentos = Vacina.query.filter_by(
-        tipo="Medicamento"
-    ).count()
-
-
-    vacinas_obrigatorias = Vacina.query.filter_by(
-        obrigatoria=True
-    ).count()
-
-
-    vacinas_com_carencia = Vacina.query.filter(
-        Vacina.dias_carencia > 0
-    ).count()
-
+    # Indicators/Estatísticas do Dashboard
+    hoje = datetime.now()
+    mes_atual = hoje.month
+    ano_atual = hoje.year
+
+    vacinados_mes = 0
+    total_doses_ml = 0.0
+    custo_total_lote = 0.0
+    alertas_reforco = 0
+
+    for reg in historico_vacinas:
+        dt_app = datetime.strptime(reg['data_aplicacao_raw'], '%Y-%m-%d')
+        if dt_app.month == mes_atual and dt_app.year == ano_atual:
+            vacinados_mes += 1
+            total_doses_ml += reg['dosagem_ml']
+
+        custo_total_lote += reg['custo_total_animal']
+
+        # Alerta se estiver vencida ou faltarem menos de 30 dias para reforço
+        status_class, _ = calcular_status(reg['data_reforco_raw'])
+        if status_class in ['status-vencida', 'status-proxima']:
+            alertas_reforco += 1
 
     metrics = {
-
-        "total_vacinas": total_vacinas,
-
-        "total_medicamentos": total_medicamentos,
-
-        "vacinas_obrigatorias": vacinas_obrigatorias,
-
-        "vacinas_com_carencia": vacinas_com_carencia
-
+        'vacinados_mes': vacinados_mes,
+        'total_doses_ml': round(total_doses_ml, 2),
+        'custo_lote': round(custo_total_lote, 2),
+        'alertas_reforco': alertas_reforco
     }
 
+    return render_template('index.html', metrics=metrics)
 
-    return render_template(
-        "resumo_Vacinas.html",
-        metrics=metrics
-    )
+@app.route('/manejo', methods=['GET', 'POST'])
+def registrar_manejo():
+    if request.method == 'POST':
+        brinco = request.form.get('brinco', '').strip()
+        peso_str = request.form.get('peso', '0')
+        vacina = request.form.get('vacina', '').strip()
+        data_aplicacao_str = request.form.get('data_aplicacao', '')
+        custo_ml_str = request.form.get('custo_ml', '0')
 
+        # --- VALIDAÇÕES SANITÁRIAS ---
+        if not brinco or not vacina or not data_aplicacao_str:
+            flash('Erro: Todos os campos obrigatórios (Brinco, Vacina e Data) devem ser preenchidos!', 'danger')
+            return redirect(url_for('registrar_manejo'))
 
-# ==========================================================
-#                  CRIAÇÃO DO BANCO
-# ==========================================================
+        try:
+            peso_kg = float(peso_str)
+            custo_ml = float(custo_ml_str)
+            if peso_kg <= 0 or custo_ml < 0:
+                flash('Erro: O peso deve ser maior que zero e o custo não pode ser negativo!', 'danger')
+                return redirect(url_for('registrar_manejo'))
+        except ValueError:
+            flash('Erro: Insira valores numéricos válidos para peso e custo.', 'danger')
+            return redirect(url_for('registrar_manejo'))
 
-with app.app_context():
+        # --- REGRAS DE NEGÓCIO AGRO ---
+        # 1. Dosagem: 1 mL para cada 50 kg de peso vivo
+        dosagem_ml = round(peso_kg / 50.0, 2)
 
-    db.create_all()
+        # 2. Custo individual
+        custo_total_animal = round(dosagem_ml * custo_ml, 2)
 
+        # 3. Ciclo de Reforço (180 dias / 6 meses)
+        dt_aplicacao = datetime.strptime(data_aplicacao_str, '%Y-%m-%d')
+        dt_reforco = dt_aplicacao + timedelta(days=180)
 
-# ==========================================================
-#                       EXECUÇÃO
-# ==========================================================
+        registro = {
+            'brinco': brinco,
+            'peso_kg': peso_kg,
+            'vacina': vacina,
+            'dosagem_ml': dosagem_ml,
+            'custo_ml': custo_ml,
+            'custo_total_animal': custo_total_animal,
+            'data_aplicacao_fmt': dt_aplicacao.strftime('%d/%m/%Y'),
+            'data_aplicacao_raw': data_aplicacao_str,
+            'data_reforco_fmt': dt_reforco.strftime('%d/%m/%Y'),
+            'data_reforco_raw': dt_reforco.strftime('%Y-%m-%d')
+        }
 
-if __name__ == "__main__":
+        historico_vacinas.append(registro)
+        flash('Registro de manejo sanitário cadastrado com sucesso!', 'success')
+        return redirect(url_for('listar_historico'))
 
+    return render_template('manejo.html')
+
+@app.route('/historico')
+def listar_historico():
+    # Processa os status sanitários para exibição na tabela
+    historico_processado = []
+    for reg in historico_vacinas:
+        status_class, status_label = calcular_status(reg['data_reforco_raw'])
+        item = reg.copy()
+        item['status_class'] = status_class
+        item['status_label'] = status_label
+        historico_processado.append(item)
+
+    return render_template('historico.html', registros=historico_processado)
+
+if __name__ == '__main__':
     app.run(debug=True)
