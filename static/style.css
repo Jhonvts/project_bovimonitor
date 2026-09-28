@@ -1,6 +1,6 @@
 /* ==========================================================================
-   BOVIMONITOR - ESTÉTICA AGRO MODERNA E ELEGANTE
-   ========================================================================== */
+  BOVIMONITOR - ESTÉTICA AGRO MODERNA E ELEGANTE
+  ========================================================================== */
 
 :root {
   --agro-primary: #1b4332;      /* Verde escuro floresta / pastagem */
@@ -188,4 +188,131 @@ tr:hover {
   .sidebar { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; padding: 15px 20px; }
   .menu, .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
   .main, .main-content { padding: 15px; }
+}
+
+
+/* ==========================================================
+   BOVIMONITOR - ESTILO PARA O TEMPLATE ATUAL
+   ========================================================== */
+
+body {
+    margin: 0;
+    background-color: var(--agro-bg);
+    color: var(--agro-text);
+}
+
+/* Cabeçalho */
+header {
+    background: linear-gradient(
+        135deg,
+        var(--agro-primary),
+        #081c15
+    );
+
+    color: white;
+    padding: 20px 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+header h2 {
+    margin: 0;
+    color: var(--agro-light);
+    font-size: 24px;
+}
+
+/* Menu */
+nav {
+    display: flex;
+    gap: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--agro-light);
+
+    padding: 10px 16px;
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    transition: 0.3s;
+}
+
+nav a:hover {
+    background: var(--agro-secondary);
+    transform: translateY(-2px);
+}
+
+/* Conteúdo */
+.container {
+    width: 100%;
+    max-width: 1400px;
+
+    margin: 0 auto;
+    padding: 30px;
+
+    min-height: calc(100vh - 80px);
+}
+
+/* Mensagens do Flask */
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.alert-success,
+.alert-danger,
+.alert-warning,
+.alert-error {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: #d8f3dc;
+    color: #1b4332;
+    border-left: 5px solid var(--agro-success);
+}
+
+.alert-danger,
+.alert-error {
+    background: #f8d7da;
+    color: #842029;
+    border-left: 5px solid var(--agro-danger);
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #664d03;
+    border-left: 5px solid var(--agro-warning);
+}
+
+/* Responsividade */
+@media (max-width: 700px) {
+
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .container {
+        padding: 15px;
+    }
+}
+
+body {
+    background: red !important;
 }
