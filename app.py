@@ -13,18 +13,14 @@ def calcular_dosagem_e_reforco(peso, vacina, custo_ml, data_aplicacao_str):
     custo_ml = float(custo_ml)
     data_ap = datetime.strptime(data_aplicacao_str, "%Y-%m-%d")
     
-    # Cálculo simples de dosagem dependendo do tipo (exemplo genérico)
     if vacina == "Vermífugo/Antiparasitário":
         dosagem = round(peso / 50.0, 2)  # 1 mL para cada 50kg
     else:
         dosagem = 2.0  # Dose fixa padrão para vacinas
         
     custo_total = round(dosagem * custo_ml, 2)
-    
-    # Data de reforço (ex: 180 dias após aplicação)
     data_reforco = data_ap + timedelta(days=180)
     
-    # Cálculo de status
     hoje = datetime.now()
     dias_restantes = (data_reforco - hoje).days
     
@@ -52,7 +48,25 @@ def calcular_dosagem_e_reforco(peso, vacina, custo_ml, data_aplicacao_str):
 
 @app.route('/')
 def index():
-    return redirect(url_for('historico'))
+    # Redireciona para o Dashboard principal
+    return redirect(url_for('dashboard'))
+
+@app.route('/dashboard')
+def dashboard():
+    # Calcula as métricas reais com base nos registros salvos
+    mes_atual = datetime.now().month
+    vacinados_mes = sum(1 for r in historico_vacinas if datetime.strptime(r['data_aplicacao_raw'], "%Y-%m-%d").month == mes_atual)
+    total_doses_ml = sum(r['dosagem_ml'] for r in historico_vacinas)
+    custo_lote = sum(r['custo_total_animal'] for r in historico_vacinas)
+    alertas_reforco = sum(1 for r in historico_vacinas if r['status_label'] == "Atenção (Reforço)")
+
+    metrics = {
+        "vacinados_mes": vacinados_mes,
+        "total_doses_ml": total_doses_ml,
+        "custo_lote": custo_lote,
+        "alertas_reforco": alertas_reforco
+    }
+    return render_template('dashboard.html', metrics=metrics)
 
 @app.route('/historico')
 def historico():
@@ -84,7 +98,6 @@ def registrar_manejo():
         
     return render_template('manejo.html')
 
-# ROTAS DE EDIÇÃO E EXCLUSÃO
 @app.route('/deletar/<int:id>', methods=['POST'])
 def deletar_manejo(id):
     global historico_vacinas
@@ -93,7 +106,6 @@ def deletar_manejo(id):
 
 @app.route('/editar/<int:id>', methods=['GET', 'POST'])
 def editar_manejo(id):
-    # Procura o registro pelo ID
     registro = next((r for r in historico_vacinas if r['id'] == id), None)
     if not registro:
         return redirect(url_for('historico'))
@@ -102,7 +114,6 @@ def editar_manejo(id):
         registro['brinco'] = request.form['brinco']
         registro['vacina'] = request.form['vacina']
         
-        # Recalcula com base nos novos valores informados
         calculados = calcular_dosagem_e_reforco(
             request.form['peso'],
             request.form['vacina'],

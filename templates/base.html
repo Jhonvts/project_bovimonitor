@@ -1,32 +1,38 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BoviMonitor - Manejo Sanitário</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='static/style.css') }}">
+    <title>BoviMonitor - Sistema de Manejo Sanitário</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header>
-        <h2>🐄 BoviMonitor</h2>
-        <nav>
-            <a href="{{ url_for('index') }}">Dashboard</a>
-            <a href="{{ url_for('registrar_manejo') }}">Novo Manejo</a>
-            <a href="{{ url_for('historico') }}">Histórico</a>
+    <header class="agro-header">
+        <!-- Logo Estilizada Agro -->
+        <div class="agro-logo">
+            <span class="logo-icon">🐂</span>
+            <div class="logo-text">
+                <h2>BoviMonitor</h2>
+                <span class="logo-subtitle">Gestão Sanitária de Rebanhos</span>
+            </div>
+        </div>
+
+        <!-- Menu com Subdivisões por Abas -->
+        <nav class="agro-nav">
+            <div class="nav-group">
+                <span class="nav-category">Visão Geral</span>
+                <a href="{{ url_for('dashboard') }}" class="nav-link">📊 Dashboard</a>
+            </div>
+
+            <div class="nav-group">
+                <span class="nav-category">Manejo & Rebanho</span>
+                <a href="{{ url_for('historico') }}" class="nav-link">📋 Histórico</a>
+                <a href="{{ url_for('registrar_manejo') }}" class="nav-link btn-action">+ Novo Manejo</a>
+            </div>
         </nav>
     </header>
 
     <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
         {% block content %}{% endblock %}
     </div>
 </body>
