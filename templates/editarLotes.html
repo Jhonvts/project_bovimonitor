@@ -4,75 +4,67 @@
 
 {% block content %}
 
-<h1>Editar Lote</h1>
+<div class="form-card">
 
-<p>Atualize as informações do lote cadastrado.</p>
+    <h2>Editar Lote</h2>
+    <p class="descricao">Atualize as informações do lote cadastrado.</p>
 
-<hr>
+    <form method="POST">
 
-<h2>Editar Dados do Lote</h2>
+        <div class="form-group">
+            <label for="nome">Nome do lote:</label>
+            <input
+                type="text"
+                id="nome"
+                name="nome"
+                value="{{ lote.nome }}"
+                required
+            >
+        </div>
 
-<form method="POST">
+        <div class="form-group">
+            <label for="quantidade">Quantidade de cabeças:</label>
+            <input
+                type="number"
+                id="quantidade"
+                name="quantidade"
+                value="{{ lote.quantidade }}"
+                min="0"
+                required
+            >
+        </div>
 
-    <label for="nome">Nome do lote:</label>
+        <div class="form-group">
+            <label for="tendas">Tendas/Áreas:</label>
+            <input
+                type="number"
+                id="tendas"
+                name="tendas"
+                value="{{ lote.tendas }}"
+                min="0"
+            >
+        </div>
 
-    <input
-        type="text"
-        id="nome"
-        name="nome"
-        value="{{ lote.nome }}"
-        required
-    >
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status" name="status">
+                <option value="ativo"
+                    {% if lote.status == 'ativo' %}selected{% endif %}>
+                    Ativo
+                </option>
+                <option value="inativo"
+                    {% if lote.status == 'inativo' %}selected{% endif %}>
+                    Inativo
+                </option>
+            </select>
+        </div>
 
-    <br><br>
+        <button type="submit" class="btn-submit">Salvar Alterações</button>
 
-    <label for="quantidade">Quantidade de cabeças:</label>
+        <a href="{{ url_for('registro_lotes') }}" class="btn-cancel" style="text-align: center; text-decoration: none;">Cancelar</a>
 
-    <input
-        type="number"
-        id="quantidade"
-        name="quantidade"
-        value="{{ lote.quantidade }}"
-        min="0"
-        required
-    >
+    </form>
 
-    <br><br>
-
-    <label for="tendas">Tendas/Áreas:</label>
-
-    <input
-        type="number"
-        id="tendas"
-        name="tendas"
-        value="{{ lote.tendas }}"
-        min="0"
-    >
-
-    <br><br>
-
-    <label for="status">Status:</label>
-
-    <select id="status" name="status">
-
-        <option value="ativo"
-            {% if lote.status == 'ativo' %}selected{% endif %}>
-            Ativo
-        </option>
-
-        <option value="inativo"
-            {% if lote.status == 'inativo' %}selected{% endif %}>
-            Inativo
-        </option>
-
-    </select>
-
-    <br><br>
-
-    <button type="submit">Salvar Alterações</button>
-
-    <a href="{{ url_for('registro_lotes') }}">Cancelar</a>
-
-</form>
+</div>
 
 {% endblock %}
