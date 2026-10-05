@@ -1,0 +1,685 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    background-color: #f4f6f4;
+    color: #212529;
+
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(135deg, #1b4332, #081c15);
+
+    color: white;
+
+    text-align: center;
+
+    padding: 30px 20px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+header h1 {
+    margin: 0;
+
+    font-size: 32px;
+}
+
+header p {
+    margin: 10px 0 0;
+
+    color: #fefae0;
+
+    font-size: 15px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+
+    margin: 40px auto;
+
+    padding: 0 20px;
+
+    box-sizing: border-box;
+}
+
+.card {
+    background-color: white;
+
+    padding: 35px;
+
+    border-radius: 14px;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+    border-top: 5px solid #2d6a4f;
+}
+
+.card h2 {
+    margin-top: 0;
+
+    margin-bottom: 8px;
+
+    color: #1b4332;
+
+    font-size: 26px;
+}
+
+.descricao {
+    margin-top: 0;
+
+    margin-bottom: 30px;
+
+    color: #6c757d;
+
+    font-size: 14px;
+}
+
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #1b4332;
+
+    font-weight: 600;
+
+    font-size: 14px;
+}
+
+.campo input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #ccd5ae;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    color: #212529;
+
+    outline: none;
+
+    transition: 0.3s;
+}
+
+.campo input:focus {
+    border-color: #2d6a4f;
+
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.12);
+}
+
+.campo input::placeholder {
+    color: #9a9a9a;
+}
+
+button {
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: #2d6a4f;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #1b4332;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 4px 10px rgba(27, 67, 50, 0.25);
+}
+
+.card > p:last-child {
+    text-align: center;
+
+    margin-top: 25px;
+
+    color: #6c757d;
+
+    font-size: 14px;
+}
+
+.card > p:last-child a {
+    color: #2d6a4f;
+
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+.card > p:last-child a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+
+    padding: 20px;
+
+    color: #6c757d;
+
+    font-size: 13px;
+}
+
+/* ==========================================================
+   EDITAR PERFIL
+   ========================================================== */
+
+.card h2 {
+    color: #1b4332;
+    margin-bottom: 25px;
+}
+
+/* Campo de e-mail bloqueado */
+.campo input:disabled {
+    background-color: #f1f3f1;
+    color: #6c757d;
+    cursor: not-allowed;
+    border-color: #dee2e6;
+}
+
+/* Link "Voltar para o perfil" */
+.card > p {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.card > p a {
+    color: #2d6a4f;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.card > p a:hover {
+    color: #1b4332;
+    text-decoration: underline;
+}
+
+.campo input:disabled {
+    background-color: #f1f3f1;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* ==========================================================
+   BOVIMONITOR - ESTILO GERAL
+   ========================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f4;
+    color: #212529;
+    min-height: 100vh;
+}
+
+
+/* ==========================================================
+   CABEÇALHO
+   ========================================================== */
+
+header {
+    background: linear-gradient(135deg, #1b4332, #081c15);
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #fefae0;
+    font-size: 15px;
+}
+
+
+/* ==========================================================
+   CONTAINER
+   ========================================================== */
+
+.container {
+    width: 100%;
+    max-width: 600px;
+
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+
+/* ==========================================================
+   CARD
+   ========================================================== */
+
+.card {
+    background-color: #ffffff;
+
+    padding: 35px;
+
+    border-radius: 14px;
+
+    border-top: 5px solid #2d6a4f;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    color: #1b4332;
+
+    font-size: 26px;
+
+    margin-bottom: 10px;
+}
+
+
+/* ==========================================================
+   DESCRIÇÃO
+   ========================================================== */
+
+.descricao {
+    color: #6c757d;
+
+    font-size: 14px;
+
+    margin-bottom: 30px;
+}
+
+
+/* ==========================================================
+   CAMPOS
+   ========================================================== */
+
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #1b4332;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   INPUTS
+   ========================================================== */
+
+.campo input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border: 1px solid #ccd5ae;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    color: #212529;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.3s;
+}
+
+.campo input::placeholder {
+    color: #9a9a9a;
+}
+
+
+/* Campo selecionado */
+
+.campo input:focus {
+    border-color: #2d6a4f;
+
+    box-shadow:
+        0 0 0 3px rgba(45, 106, 79, 0.12);
+}
+
+
+/* Campo desativado - usado no e-mail do perfil */
+
+.campo input:disabled {
+    background-color: #f1f3f1;
+
+    color: #6c757d;
+
+    cursor: not-allowed;
+
+    border-color: #dee2e6;
+}
+
+
+/* ==========================================================
+   BOTÃO
+   ========================================================== */
+
+button {
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: #2d6a4f;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #1b4332;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 4px 10px rgba(27, 67, 50, 0.25);
+}
+
+
+/* ==========================================================
+   LINKS
+   ========================================================== */
+
+.card > p:last-child {
+    text-align: center;
+
+    margin-top: 25px;
+
+    color: #6c757d;
+
+    font-size: 14px;
+}
+
+.card > p:last-child a {
+    color: #2d6a4f;
+
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+.card > p:last-child a:hover {
+    color: #1b4332;
+
+    text-decoration: underline;
+}
+
+
+/* ==========================================================
+   RODAPÉ
+   ========================================================== */
+
+footer {
+    text-align: center;
+
+    padding: 20px;
+
+    color: #6c757d;
+
+    font-size: 13px;
+}
+
+
+/* ==========================================================
+   RESPONSIVIDADE
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 25px 15px;
+    }
+
+    header h1 {
+        font-size: 26px;
+    }
+
+    header p {
+        font-size: 14px;
+    }
+
+    .container {
+        margin: 25px auto;
+    }
+
+    .card {
+        padding: 25px 20px;
+    }
+
+    .card h2 {
+        font-size: 23px;
+    }
+}
+
+/* ==========================================================
+   MENU DO PERFIL
+   ========================================================== */
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header nav {
+    display: flex;
+    gap: 10px;
+}
+
+header nav a {
+    color: #fefae0;
+    text-decoration: none;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    background-color: rgba(255, 255, 255, 0.08);
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.3s;
+}
+
+header nav a:hover {
+    background-color: #2d6a4f;
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==========================================================
+   INFORMAÇÕES DO PERFIL
+   ========================================================== */
+
+.perfil-info {
+    margin-top: 25px;
+}
+
+.perfil-info h3 {
+    color: #1b4332;
+
+    font-size: 18px;
+
+    margin-top: 25px;
+    margin-bottom: 15px;
+
+    padding-bottom: 8px;
+
+    border-bottom: 2px solid #ccd5ae;
+}
+
+.perfil-info h3:first-child {
+    margin-top: 0;
+}
+
+.perfil-info p {
+    background-color: #f8f9f8;
+
+    padding: 12px 15px;
+
+    margin-bottom: 10px;
+
+    border-radius: 8px;
+
+    border-left: 4px solid #2d6a4f;
+
+    color: #495057;
+}
+
+.perfil-info strong {
+    color: #1b4332;
+}
+
+
+/* ==========================================================
+   BOTÕES DE AÇÃO
+   ========================================================== */
+
+.acoes {
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 30px;
+}
+
+.acoes a {
+    flex: 1;
+    text-decoration: none;
+}
+
+.acoes button {
+    margin-top: 0;
+}
+
+
+/* ==========================================================
+   BOTÃO SECUNDÁRIO
+   ========================================================== */
+
+.acoes a:last-child button {
+    background-color: #bc4749;
+}
+
+.acoes a:last-child button:hover {
+    background-color: #9d3033;
+}
+
+
+/* ==========================================================
+   RESPONSIVIDADE DO PERFIL
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+    header {
+        flex-direction: column;
+    }
+
+    header nav {
+        width: 100%;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+    }
+
+    .acoes {
+        flex-direction: column;
+    }
+}
+
+.btn-link {
+    display: block;
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin-top: 15px;
+
+    background-color: #2d6a4f;
+
+    color: white;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    transition: 0.3s;
+}
+
+.btn-link:hover {
+    background-color: #1b4332;
+
+    transform: translateY(-2px);
+}

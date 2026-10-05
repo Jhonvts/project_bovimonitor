@@ -5,13 +5,11 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>BoviMonitor - Meu Perfil</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 
@@ -76,32 +74,30 @@
 
                 {% if propriedade %}
 
-                    <p>
-                        <strong>Nome:</strong>
-                        {{ propriedade.nome }}
-                    </p>
+                <p>
+                    <strong>Nome:</strong>
+                    {{ propriedade.nome }}
+                </p>
 
-                    <p>
-                        <strong>Localização:</strong>
-                        {{ propriedade.localizacao }}
-                    </p>
+                <p>
+                    <strong>Localização:</strong>
+                    {{ propriedade.localizacao }}
+                </p>
 
-                    <p>
-                        <strong>Área:</strong>
-                        {{ propriedade.area }} hectares
-                    </p>
+                <p>
+                    <strong>Área:</strong>
+                    {{ propriedade.area }} hectares
+                </p>
 
                 {% else %}
 
-                    <p>
-                        Você ainda não cadastrou uma propriedade.
-                    </p>
+                <p>
+                    Você ainda não cadastrou uma propriedade.
+                </p>
 
-                    <a href="/propriedade/cadastrar">
-                        <button type="button">
-                            + Cadastrar propriedade
-                        </button>
-                    </a>
+                <a href="/propriedade/cadastrar" class="btn-link">
+                    + Cadastrar propriedade
+                </a>
 
                 {% endif %}
 
@@ -110,14 +106,9 @@
 
             <div class="acoes">
 
-                <a href="/perfil/editar">
-
-                    <button type="button">
-                        Atualizar Perfil
-                    </button>
-
+                <a href="/perfil/editar" class="btn-link">
+                    Atualizar Perfil
                 </a>
-
 
                 <a href="/logout">
 
