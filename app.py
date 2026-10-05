@@ -198,8 +198,7 @@ def registrar_manejo():
         historico_vacinas.append(registro)
 
         flash(
-            'Registro de manejo sanitário '
-            'cadastrado com sucesso!',
+            'Registro de manejo sanitário cadastrado com sucesso!',
             'success'
         )
 
@@ -207,9 +206,8 @@ def registrar_manejo():
             url_for('listar_historico')
         )
 
-        return render_template(
-            'cadastroManejoVacinas.html'
-        )
+    # ESTA LINHA DEVE FICAR FORA DO 'if request.method == \'POST\':'
+    return render_template('cadastroManejoVacinas.html')
 
 
 @app.route('/historico')
