@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>BoviMonitor - Início</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <header>
+
+        <h1>🐄 BoviMonitor</h1>
+
+        <nav>
+
+            <a href="{{ url_for('inicio') }}">
+                Início
+            </a>
+
+            <a href="{{ url_for('perfil') }}">
+                Meu Perfil
+            </a>
+
+            <a href="{{ url_for('registro_lotes') }}">
+                Lotes
+            </a>
+
+            <a href="{{ url_for('cadastro_vacina') }}">
+                Vacinas
+            </a>
+
+            <a href="{{ url_for('historico_vacinas') }}">
+                Histórico
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Sair
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <main class="container">
+
+        <section class="card">
+
+            <h2>
+                Bem-vindo ao BoviMonitor, {{ current_user.nome }}! 🐄
+            </h2>
+
+            <p>
+                Gerencie seus lotes e acompanhe o manejo
+                sanitário do seu rebanho.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            BoviMonitor - Sistema de Controle Sanitário e Manejo de Rebanhos
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

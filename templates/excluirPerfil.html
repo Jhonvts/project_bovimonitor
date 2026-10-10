@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Excluir Perfil</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <h1>Excluir perfil</h1>
+
+    <p>
+        Tem certeza que deseja excluir seu perfil?
+    </p>
+
+    <form action="{{ url_for('excluir_perfil') }}" method="POST">
+
+        <button type="submit">
+            Sim, excluir meu perfil
+        </button>
+
+    </form>
+
+    <a href="{{ url_for('perfil') }}">
+        Cancelar
+    </a>
+
+</body>
+
+</html>

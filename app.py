@@ -13,47 +13,33 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-
 # ==========================================================
-#                    CONFIGURAÇÃO
+# CONFIGURAÇÃO
 # ==========================================================
 
 app.config["SECRET_KEY"] = "bovimonitor_secret_key"
-
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bovimonitor.db"
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
 
 db = SQLAlchemy(app)
 
-
 # ==========================================================
-#                  CONFIGURAÇÃO DO LOGIN
+# CONFIGURAÇÃO DO LOGIN
 # ==========================================================
 
 login_manager = LoginManager(app)
-
 login_manager.login_view = "login"
-
 login_manager.login_message = "Faça login para acessar essa página."
 
-
 # ==========================================================
-#                       USUÁRIO
+# USUÁRIO
 # ==========================================================
 
 class Usuario(UserMixin, db.Model):
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+    id = db.Column(db.Integer, primary_key=True)
 
-    nome = db.Column(
-        db.String(100),
-        nullable=False
-    )
+    nome = db.Column(db.String(100), nullable=False)
 
     email = db.Column(
         db.String(150),
@@ -79,7 +65,7 @@ class Usuario(UserMixin, db.Model):
 
 
 # ==========================================================
-#                         LOTE
+# LOTE
 # ==========================================================
 
 class Lote(db.Model):
@@ -113,7 +99,7 @@ class Lote(db.Model):
 
 
 # ==========================================================
-#                  VACINA / MEDICAMENTO
+# VACINA / MEDICAMENTO
 # ==========================================================
 
 class Vacina(db.Model):
@@ -147,7 +133,7 @@ class Vacina(db.Model):
 
 
 # ==========================================================
-#                   MANEJO SANITÁRIO
+# MANEJO SANITÁRIO
 # ==========================================================
 
 class ManejoSanitario(db.Model):
@@ -185,7 +171,7 @@ class ManejoSanitario(db.Model):
 
 
 # ==========================================================
-#                  GERENCIADOR DE LOGIN
+# GERENCIADOR DE LOGIN
 # ==========================================================
 
 @login_manager.user_loader
@@ -198,19 +184,19 @@ def carregar_usuario(user_id):
 
 
 # ==========================================================
-#                    PÁGINA INICIAL
+# PÁGINA INICIAL
 # ==========================================================
 
 @app.route("/")
 def index():
 
     return redirect(
-        url_for("login")
+        url_for("perfil")
     )
 
 
 # ==========================================================
-#                       CADASTRO
+# CADASTRO
 # ==========================================================
 
 @app.route("/cadastro", methods=["GET", "POST"])
@@ -219,18 +205,13 @@ def cadastro():
     if request.method == "POST":
 
         nome = request.form["nome"]
-
         email = request.form["email"]
-
         telefone = request.form["telefone"]
-
         senha = request.form["senha"]
-
 
         usuario_existente = Usuario.query.filter_by(
             email=email
         ).first()
-
 
         if usuario_existente:
 
@@ -239,27 +220,19 @@ def cadastro():
             )
 
             return redirect(
-                url_for("cadastro")
+                url_for("login")
             )
-
 
         senha_hash = generate_password_hash(
             senha
         )
 
-
         novo_usuario = Usuario(
-
             nome=nome,
-
             email=email,
-
             telefone=telefone,
-
             senha=senha_hash
-
         )
-
 
         db.session.add(
             novo_usuario
@@ -267,15 +240,17 @@ def cadastro():
 
         db.session.commit()
 
+        login_user(
+            novo_usuario
+        )
 
         flash(
             "Cadastro realizado com sucesso!"
         )
 
         return redirect(
-            url_for("resumo_Vacinas")
+            url_for("inicio ")
         )
-
 
     return render_template(
         "cadastro.html"
@@ -283,7 +258,7 @@ def cadastro():
 
 
 # ==========================================================
-#                         LOGIN
+# LOGIN
 # ==========================================================
 
 @app.route("/login", methods=["GET", "POST"])
@@ -292,14 +267,11 @@ def login():
     if request.method == "POST":
 
         email = request.form["email"]
-
         senha = request.form["senha"]
-
 
         usuario = Usuario.query.filter_by(
             email=email
         ).first()
-
 
         if usuario and check_password_hash(
             usuario.senha,
@@ -309,14 +281,12 @@ def login():
             login_user(usuario)
 
             return redirect(
-                url_for("perfil")
+                url_for("inicio")
             )
-
 
         flash(
             "E-mail ou senha incorretos!"
         )
-
 
     return render_template(
         "login.html"
@@ -324,7 +294,7 @@ def login():
 
 
 # ==========================================================
-#                         LOGOUT
+# LOGOUT
 # ==========================================================
 
 @app.route("/logout")
@@ -341,9 +311,18 @@ def logout():
         url_for("login")
     )
 
+# ==========================================================
+# PÁGINA INICIAL
+# ==========================================================
+
+@app.route("/inicio")
+@login_required
+def inicio():
+
+    return render_template("inicio.html")
 
 # ==========================================================
-#                         PERFIL
+# PERFIL
 # ==========================================================
 
 @app.route("/perfil")
@@ -357,7 +336,7 @@ def perfil():
 
 
 # ==========================================================
-#                    EDITAR PERFIL
+# EDITAR PERFIL
 # ==========================================================
 
 @app.route("/perfil/editar", methods=["GET", "POST"])
@@ -367,30 +346,46 @@ def editar_perfil():
     if request.method == "POST":
 
         current_user.nome = request.form["nome"]
-
         current_user.telefone = request.form["telefone"]
 
         db.session.commit()
-
 
         flash(
             "Perfil atualizado com sucesso!"
         )
 
-
         return redirect(
             url_for("perfil")
         )
-
 
     return render_template(
         "editar_perfil.html",
         usuario=current_user
     )
 
+# ==========================================================
+# EXCLUIR PERFIL
+# ==========================================================
+
+@app.route("/perfil/excluir", methods=["GET", "POST"])
+@login_required
+def excluir_perfil():
+
+    if request.method == "POST":
+
+        db.session.delete(current_user)
+        db.session.commit()
+
+        logout_user()
+
+        flash("Perfil excluído com sucesso!")
+
+        return redirect(url_for("login"))
+
+    return render_template("excluirPerfil.html")
 
 # ==========================================================
-#                         LOTES
+# LOTES
 # ==========================================================
 
 @app.route(
@@ -398,27 +393,27 @@ def editar_perfil():
     methods=["GET", "POST"]
 )
 @login_required
-def lotes():
+def registro_lotes():
 
     if request.method == "POST":
 
         nome = request.form["nome"]
 
-        quantidade = request.form["quantidade"]
-
-
-        novo_lote = Lote(
-
-            usuario_id=current_user.id,
-
-            nome=nome,
-
-            quantidade_cabecas=quantidade,
-
-            status="ATIVO"
-
+        quantidade = int(
+            request.form["quantidade"]
         )
 
+        status = request.form.get(
+            "status",
+            "ATIVO"
+        )
+
+        novo_lote = Lote(
+            usuario_id=current_user.id,
+            nome=nome,
+            quantidade_cabecas=quantidade,
+            status=status
+        )
 
         db.session.add(
             novo_lote
@@ -426,21 +421,17 @@ def lotes():
 
         db.session.commit()
 
-
         flash(
             "Lote cadastrado com sucesso!"
         )
 
-
         return redirect(
-            url_for("lotes")
+            url_for("registro_lotes")
         )
-
 
     lista_lotes = Lote.query.filter_by(
         usuario_id=current_user.id
     ).all()
-
 
     return render_template(
         "registroLotes.html",
@@ -449,7 +440,7 @@ def lotes():
 
 
 # ==========================================================
-#                      EDITAR LOTE
+# EDITAR LOTE
 # ==========================================================
 
 @app.route(
@@ -461,7 +452,6 @@ def editar_lote(id):
 
     lote = Lote.query.get_or_404(id)
 
-
     if lote.usuario_id != current_user.id:
 
         flash(
@@ -469,31 +459,28 @@ def editar_lote(id):
         )
 
         return redirect(
-            url_for("lotes")
+            url_for("registro_lotes")
         )
-
 
     if request.method == "POST":
 
         lote.nome = request.form["nome"]
 
-        lote.quantidade_cabecas = request.form["quantidade"]
+        lote.quantidade_cabecas = int(
+            request.form["quantidade"]
+        )
 
         lote.status = request.form["status"]
 
-
         db.session.commit()
-
 
         flash(
             "Lote atualizado com sucesso!"
         )
 
-
         return redirect(
-            url_for("lotes")
+            url_for("registro_lotes")
         )
-
 
     return render_template(
         "editarLotes.html",
@@ -502,7 +489,7 @@ def editar_lote(id):
 
 
 # ==========================================================
-#                     EXCLUIR LOTE
+# EXCLUIR LOTE
 # ==========================================================
 
 @app.route(
@@ -514,7 +501,6 @@ def excluir_lote(id):
 
     lote = Lote.query.get_or_404(id)
 
-
     if lote.usuario_id != current_user.id:
 
         flash(
@@ -522,9 +508,8 @@ def excluir_lote(id):
         )
 
         return redirect(
-            url_for("lotes")
+            url_for("registro_lotes")
         )
-
 
     db.session.delete(
         lote
@@ -532,19 +517,17 @@ def excluir_lote(id):
 
     db.session.commit()
 
-
     flash(
         "Lote excluído com sucesso!"
     )
 
-
     return redirect(
-        url_for("lotes")
+        url_for("registro_lotes")
     )
 
 
 # ==========================================================
-#                CADASTRAR VACINA / MEDICAMENTO
+# CADASTRAR VACINA / MEDICAMENTO
 # ==========================================================
 
 @app.route(
@@ -560,32 +543,18 @@ def cadastro_vacina():
 
         tipo = request.form["tipo"]
 
-        dias_carencia = request.form["dias_carencia"]
-
-        obrigatoria = request.form["obrigatoria"]
-
-
-        if obrigatoria == "sim":
-
-            obrigatoria = True
-
-        else:
-
-            obrigatoria = False
-
-
-        nova_vacina = Vacina(
-
-            nome=nome,
-
-            tipo=tipo,
-
-            dias_carencia=dias_carencia,
-
-            obrigatoria=obrigatoria
-
+        dias_carencia = int(
+            request.form["dias_carencia"]
         )
 
+        obrigatoria = request.form["obrigatoria"] == "sim"
+
+        nova_vacina = Vacina(
+            nome=nome,
+            tipo=tipo,
+            dias_carencia=dias_carencia,
+            obrigatoria=obrigatoria
+        )
 
         db.session.add(
             nova_vacina
@@ -593,25 +562,21 @@ def cadastro_vacina():
 
         db.session.commit()
 
-
         flash(
             "Vacina ou medicamento cadastrado com sucesso!"
         )
-
 
         return redirect(
             url_for("historico_vacinas")
         )
 
-
     return render_template(
-        "historico_deVacinas.html",
-        vacinas=lista_vacinas
+        "cadastroManejoeVacinas.html"
     )
 
 
 # ==========================================================
-#                   HISTÓRICO DE VACINAS
+# HISTÓRICO DE VACINAS
 # ==========================================================
 
 @app.route("/vacinas")
@@ -620,7 +585,6 @@ def historico_vacinas():
 
     lista_vacinas = Vacina.query.all()
 
-
     return render_template(
         "historico_deVacinas.html",
         vacinas=lista_vacinas
@@ -628,7 +592,7 @@ def historico_vacinas():
 
 
 # ==========================================================
-#                    EDITAR VACINA
+# EDITAR VACINA
 # ==========================================================
 
 @app.route(
@@ -640,37 +604,29 @@ def editar_vacina(id):
 
     vacina = Vacina.query.get_or_404(id)
 
-
     if request.method == "POST":
 
         vacina.nome = request.form["nome"]
 
         vacina.tipo = request.form["tipo"]
 
-        vacina.dias_carencia = request.form["dias_carencia"]
+        vacina.dias_carencia = int(
+            request.form["dias_carencia"]
+        )
 
-
-        if request.form["obrigatoria"] == "sim":
-
-            vacina.obrigatoria = True
-
-        else:
-
-            vacina.obrigatoria = False
-
+        vacina.obrigatoria = (
+            request.form["obrigatoria"] == "sim"
+        )
 
         db.session.commit()
-
 
         flash(
             "Vacina atualizada com sucesso!"
         )
 
-
         return redirect(
             url_for("historico_vacinas")
         )
-
 
     return render_template(
         "editar_manejo.html",
@@ -679,7 +635,7 @@ def editar_vacina(id):
 
 
 # ==========================================================
-#                   EXCLUIR VACINA
+# EXCLUIR VACINA
 # ==========================================================
 
 @app.route(
@@ -691,18 +647,15 @@ def deletar_vacina(id):
 
     vacina = Vacina.query.get_or_404(id)
 
-
     db.session.delete(
         vacina
     )
 
     db.session.commit()
 
-
     flash(
         "Vacina excluída com sucesso!"
     )
-
 
     return redirect(
         url_for("historico_vacinas")
@@ -710,7 +663,7 @@ def deletar_vacina(id):
 
 
 # ==========================================================
-#                     RESUMO DE VACINAS
+# RESUMO DE VACINAS
 # ==========================================================
 
 @app.route("/vacinas/resumo")
@@ -721,34 +674,24 @@ def resumo_vacinas():
         tipo="Vacina"
     ).count()
 
-
     total_medicamentos = Vacina.query.filter_by(
         tipo="Medicamento"
     ).count()
-
 
     vacinas_obrigatorias = Vacina.query.filter_by(
         obrigatoria=True
     ).count()
 
-
     vacinas_com_carencia = Vacina.query.filter(
         Vacina.dias_carencia > 0
     ).count()
 
-
     metrics = {
-
         "total_vacinas": total_vacinas,
-
         "total_medicamentos": total_medicamentos,
-
         "vacinas_obrigatorias": vacinas_obrigatorias,
-
         "vacinas_com_carencia": vacinas_com_carencia
-
     }
-
 
     return render_template(
         "resumo_Vacinas.html",
@@ -757,7 +700,7 @@ def resumo_vacinas():
 
 
 # ==========================================================
-#                  CRIAÇÃO DO BANCO
+# CRIAÇÃO DO BANCO
 # ==========================================================
 
 with app.app_context():
@@ -766,7 +709,7 @@ with app.app_context():
 
 
 # ==========================================================
-#                       EXECUÇÃO
+# EXECUÇÃO
 # ==========================================================
 
 if __name__ == "__main__":
