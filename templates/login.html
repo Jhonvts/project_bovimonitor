@@ -1,96 +1,16 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>BoviMonitor - Login</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-
-<body>
-
-    <header>
-
-        <h1>🐄 BoviMonitor</h1>
-
-        <p>
-            Sistema de Controle Sanitário e Manejo de Rebanhos
-        </p>
-
-    </header>
-
-    <main class="container">
-
-        <section class="card">
-
-            <h2>Entrar</h2>
-
-            <p class="descricao">
-                Acesse sua conta do BoviMonitor.
-            </p>
-
-            <form action="/login" method="POST">
-
-                <div class="campo">
-
-                    <label for="email">
-                        E-mail
-                    </label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Digite seu e-mail"
-                        required
-                    >
-
-                </div>
-
-                <div class="campo">
-
-                    <label for="senha">
-                        Senha
-                    </label>
-
-                    <input
-                        type="password"
-                        id="senha"
-                        name="senha"
-                        placeholder="Digite sua senha"
-                        required
-                    >
-
-                </div>
-
-                <button type="submit">
-                    Entrar
-                </button>
-
-            </form>
-
-            <p>
-                Ainda não possui uma conta?
-                <a href="/cadastro">
-                    Cadastre-se
-                </a>
-            </p>
-
-        </section>
-
-    </main>
-
-    <footer>
-
-        <p>
-            BoviMonitor
-        </p>
-
-    </footer>
-
-</body>
-
-</html>
+{% extends "base.html" %}
+{% block title %}Entrar · BoviMonitor{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="eyebrow">GESTÃO SANITÁRIA DO REBANHO</div>
+  <h1>Bem-vindo de volta</h1>
+  <p class="muted">Entre para acompanhar os lotes e manejos da propriedade.</p>
+  <form method="post" class="form-stack">
+    <label>E-mail<input type="email" name="email" required autocomplete="username"></label>
+    <label>Senha<input type="password" name="senha" required autocomplete="current-password"></label>
+    <button class="button" type="submit">Entrar</button>
+  </form>
+  <p class="muted center">Ainda não tem conta? <a href="{{ url_for('cadastro') }}">Cadastre-se</a></p>
+  <p class="small muted">Demonstração local: admin@bovimonitor.local / Admin123!</p>
+</section>
+{% endblock %}

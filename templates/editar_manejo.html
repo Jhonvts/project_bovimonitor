@@ -1,88 +1,21 @@
-
-
-{% extends 'base.html' %}
-
-{% block title %}Editar Vacina - BoviMonitor{% endblock %}
-
+{% extends "base.html" %}
+{% block title %}Editar manejo · BoviMonitor{% endblock %}
 {% block content %}
-
-<div class="form-card">
-
-    <h2>Editar Vacina ou Medicamento</h2>
-
-    <form action="{{ url_for('editar_vacina', id=vacina.id) }}" method="POST">
-
-        <div class="form-group">
-            <label for="nome">Nome da vacina ou medicamento</label>
-
-            <input
-                type="text"
-                id="nome"
-                name="nome"
-                value="{{ vacina.nome }}"
-                required
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="tipo">Tipo</label>
-
-            <select id="tipo" name="tipo" required>
-
-                <option value="Vacina"
-                    {% if vacina.tipo == 'Vacina' %}selected{% endif %}>
-                    Vacina
-                </option>
-
-                <option value="Medicamento"
-                    {% if vacina.tipo == 'Medicamento' %}selected{% endif %}>
-                    Medicamento
-                </option>
-
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="dias_carencia">Dias de carência</label>
-
-            <input
-                type="number"
-                id="dias_carencia"
-                name="dias_carencia"
-                value="{{ vacina.dias_carencia }}"
-                min="0"
-                required
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="obrigatoria">Vacina obrigatória?</label>
-
-            <select id="obrigatoria" name="obrigatoria" required>
-
-                <option value="sim"
-                    {% if vacina.obrigatoria == 'sim' %}selected{% endif %}>
-                    Sim
-                </option>
-
-                <option value="nao"
-                    {% if vacina.obrigatoria == 'nao' %}selected{% endif %}>
-                    Não
-                </option>
-
-            </select>
-        </div>
-
-        <button type="submit" class="btn-submit">
-            Salvar Alterações
-        </button>
-
-        <a href="{{ url_for('historico_vacinas') }}" class="btn-cancel">
-            Cancelar
-        </a>
-
+<section class="panel narrow">
+    <div class="eyebrow">HISTÓRICO SANITÁRIO</div>
+    <h1>Editar manejo</h1>
+    <form method="post" class="form-stack">
+        <label>Lote<select name="lote_id" required>{% for lote in lotes %}<option value="{{ lote.id }}" {% if
+                    lote.id==manejo.lote_id %}selected{% endif %}>{{ lote.nome }} ({{ lote.quantidade_cabecas }}
+                    cabeças)</option>{% endfor %}</select></label>
+        <label>Vacina/medicamento<select name="vacina_id" required>{% for vacina in vacinas %}<option
+                    value="{{ vacina.id }}" {% if vacina.id==manejo.vacina_id %}selected{% endif %}>{{ vacina.nome }} —
+                    {{ vacina.dias_carencia }} dia(s)</option>{% endfor %}</select></label>
+        <label>Data da aplicação<input type="date" name="data_aplicacao" required
+                value="{{ manejo.data_aplicacao.isoformat() }}"></label>
+        <label>Observação<input name="observacao" maxlength="300" value="{{ manejo.observacao or '' }}"></label>
+        <div class="actions"><button class="button" type="submit">Salvar alterações</button><a
+                class="button button-outline" href="{{ url_for('manejos') }}">Cancelar</a></div>
     </form>
-
-</div>
-
+</section>
 {% endblock %}

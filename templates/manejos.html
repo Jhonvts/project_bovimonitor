@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Manejos · BoviMonitor{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">HISTÓRICO SANITÁRIO</div>
+        <h1>Registro de manejo</h1>
+        <p>Registre uma aplicação e acompanhe a data calculada para liberação.</p>
+    </div>
+</div>
+<section class="panel">
+    <h2>Novo manejo</h2>
+    {% if lotes and vacinas %}
+    <form method="post" class="form-grid">
+        <label>Lote<select name="lote_id" required>
+                <option value="">Selecione um lote</option>{% for l in lotes %}<option value="{{ l.id }}">{{ l.nome }}
+                    ({{ l.quantidade_cabecas }} cabeças)</option>{% endfor %}
+            </select></label>
+        <label>Vacina/medicamento<select name="vacina_id" required>
+                <option value="">Selecione um item</option>{% for v in vacinas %}<option value="{{ v.id }}">{{ v.nome }}
+                    — {{ v.dias_carencia }} dia(s) de carência</option>{% endfor %}
+            </select></label>
+        <label>Data da aplicação<input type="date" name="data_aplicacao" required
+                value="{{ hoje.isoformat() }}"></label>
+        <label>Observação (opcional)<input name="observacao" maxlength="300"
+                placeholder="Responsável, lote do produto etc."></label>
+        <div><button class="button" type="submit">Registrar manejo</button></div>
+    </form>
+    {% else %}<p class="empty">Para registrar um manejo, cadastre pelo menos um lote e uma vacina/medicamento.</p>
+    <div class="actions"><a class="button" href="{{ url_for('lotes') }}">Cadastrar lote</a><a
+            class="button button-outline" href="{{ url_for('vacinas') }}">Cadastrar vacina</a></div>{% endif %}
+</section>
+<section class="panel">
+    <div class="section-heading">
+        <h2>Histórico de aplicações</h2><span class="muted">{{ manejos|length }} registro(s)</span>
+    </div>
+    {% if manejos %}<div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Lote</th>
+                    <th>Vacina/medicamento</th>
+                    <th>Aplicação</th>
+                    <th>Liberação</th>
+                    <th>Situação</th>
+                    <th>Obs.</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in manejos %}<tr>
+                    <td>{{ m.lote.nome }}</td>
+                    <td>{{ m.vacina.nome }}</td>
+                    <td>{{ m.data_aplicacao.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ m.data_liberacao.strftime('%d/%m/%Y') }}</td>
+                    <td><span class="pill {{ 'pill-warning' if m.data_liberacao > hoje else 'pill-success' }}">{{ 'Em
+                            carência' if m.data_liberacao > hoje else 'Liberado' }}</span></td>
+                    <td>{{ m.observacao or '—' }}</td>
+                    <td class="actions"><a class="button button-small button-outline"
+                            href="{{ url_for('editar_manejo', manejo_id=m.id) }}">Editar</a>
+                        <form method="post" action="{{ url_for('excluir_manejo', manejo_id=m.id) }}"
+                            onsubmit="return confirm('Remover este registro do histórico?');"><button
+                                class="button button-small button-danger" type="submit">Excluir</button></form>
+                    </td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>{% else %}<p class="empty">Nenhum manejo registrado.</p>{% endif %}
+</section>
+{% endblock %}

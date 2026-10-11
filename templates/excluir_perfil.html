@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Excluir conta · BoviMonitor{% endblock %}
+{% block content %}
+<section class="panel narrow">
+    <div class="eyebrow">ATENÇÃO</div>
+    <h1>Excluir minha conta</h1>
+    <p>Esta ação é permanente. A conta, a propriedade rural, os lotes e os históricos de manejo ligados a ela serão
+        removidos.</p>
+    <form method="post" class="actions"
+        onsubmit="return confirm('Tem certeza que deseja excluir a conta e os dados vinculados?');">
+        <button class="button button-danger" type="submit">Sim, excluir minha conta</button>
+        <a class="button button-outline" href="{{ url_for('perfil') }}">Cancelar</a>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Erro {{ codigo }} · BoviMonitor{% endblock %}
+{% block content %}<section class="auth-card center"><div class="eyebrow">OPS!</div><h1>{{ codigo }}</h1><p>{{ mensagem }}</p><a class="button" href="{{ url_for('dashboard') }}">Voltar ao painel</a></section>{% endblock %}

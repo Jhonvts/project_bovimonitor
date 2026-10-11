@@ -1,0 +1,43 @@
+@startuml banco
+entity "Usuario" {
+  * id_usuario : INT <<PK>>
+  --
+  nome : VARCHAR(100)
+  email : VARCHAR(100)
+  senha_hash : VARCHAR(255)
+}
+
+entity "Lote" {
+  * id_lote : INT <<PK>>
+  --
+  id_usuario : INT <<FK>>
+  nome_lote : VARCHAR(50)
+  quantidade_cabecas : INT
+  data_criacao : DATE
+}
+
+entity "Pesagem" {
+  * id_pesagem : INT <<PK>>
+  --
+  id_lote : INT <<FK>>
+  data_pesagem : DATE
+  peso_total_kg : DECIMAL(10,2)
+  media_kg_cabeca : DECIMAL(10,2)
+  total_arrobas : DECIMAL(10,2)
+}
+
+entity "Insumo" {
+  * id_insumo : INT <<PK>>
+  --
+  id_lote : INT <<FK>>
+  nome_insumo : VARCHAR(100)
+  quantidade : DECIMAL(10,2)
+  unidade_medida : VARCHAR(20)
+  custo_total : DECIMAL(10,2)
+}
+
+Usuario ||--o{ Lote : "possui"
+Lote ||--o{ Pesagem : "registra"
+Lote ||--o{ Insumo : "consome"
+
+@enduml

@@ -1,108 +1,16 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>BoviMonitor - Editar Perfil</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-
-</head>
-
-<body>
-
-    <header>
-
-        <h1>🐄 BoviMonitor</h1>
-
-    </header>
-
-
-    <main class="container">
-
-        <section class="card">
-
-            <h2>Editar Perfil</h2>
-
-
-            <form action="/perfil/editar"
-                  method="POST">
-
-
-                <div class="campo">
-
-                    <label for="nome">
-                        Nome
-                    </label>
-
-                    <input
-                        type="text"
-                        id="nome"
-                        name="nome"
-                        value="{{ usuario.nome }}"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="telefone">
-                        Celular
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="telefone"
-                        name="telefone"
-                        value="{{ usuario.telefone }}"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label>
-                        E-mail
-                    </label>
-
-                    <input
-                        type="email"
-                        value="{{ usuario.email }}"
-                        disabled
-                    >
-
-                </div>
-
-
-                <button type="submit">
-                    Salvar alterações
-                </button>
-
-            </form>
-
-
-            <p>
-
-                <a href="/perfil">
-                    Voltar para o perfil
-                </a>
-
-            </p>
-
-        </section>
-
-    </main>
-
-</body>
-
-</html>
+{% extends "base.html" %}
+{% block title %}Editar perfil · BoviMonitor{% endblock %}
+{% block content %}
+<section class="panel narrow">
+    <div class="eyebrow">SUA CONTA</div>
+    <h1>Editar perfil</h1>
+    <form method="post" class="form-stack">
+        <label>Nome<input name="nome" maxlength="100" required value="{{ usuario.nome }}" autocomplete="name"></label>
+        <label>E-mail<input type="email" value="{{ usuario.email }}" disabled></label>
+        <label>Telefone<input name="telefone" maxlength="20" value="{{ usuario.telefone or '' }}"
+                autocomplete="tel"></label>
+        <div class="actions"><button class="button" type="submit">Salvar alterações</button><a
+                class="button button-outline" href="{{ url_for('perfil') }}">Cancelar</a></div>
+    </form>
+</section>
+{% endblock %}

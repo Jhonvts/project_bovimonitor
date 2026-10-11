@@ -1,44 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}BoviMonitor - Lotes{% endblock %}</title>
+  <title>{% block title %}BoviMonitor{% endblock %}</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
+  <header class="topbar">
 
-    <header>
-        <h2>🐄 BoviMonitor</h2>
+    <a class="brand" href="{{ url_for('index') }}">
+      🐂 BoviMonitor
+    </a>
 
-        <nav>
-            <a href="{{ url_for('registro_lotes') }}">Lotes</a>
-            <a href="{{ url_for('registro_lotes') }}">Cadastrar Lote</a>
-        </nav>
-    </header>
-
-    <main class="container">
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flash-messages">
-                    {% for category, message in messages %}
-                        <div class="alert-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        {% block content %}
-        {% endblock %}
-
-    </main>
-
+    {% if current_user.is_authenticated %}
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Painel</a>
+      <a href="{{ url_for('lotes') }}">Lotes</a>
+      <a href="{{ url_for('vacinas') }}">Vacinas</a>
+      <a href="{{ url_for('manejos') }}">Manejos</a>
+      <a href="{{ url_for('perfil') }}">Meu perfil</a>
+    </nav>
+    <div class="user-area">
+      <span>{{ current_user.nome }}</span>
+      <form method="post" action="{{ url_for('sair') }}"><button class="button button-quiet" type="submit">Sair</button>
+      </form>
+    </div>
+    {% endif %}
+  </header>
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <section class="messages" aria-live="polite">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </section>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">BoviMonitor · Protótipo acadêmico de controle sanitário</footer>
 </body>
+
 </html>
