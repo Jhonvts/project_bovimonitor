@@ -1,0 +1,63 @@
+
+@startuml modelo_logico
+
+title Modelo Lógico de Dados - BoviMonitor
+
+hide methods
+hide stereotypes
+skinparam linetype ortho
+
+entity "Usuario" as usuario {
+  * id
+  --
+  nome
+  email
+  telefone
+  senha_hash
+  perfil
+}
+
+entity "Propriedade" as propriedade {
+  * id
+  --
+  usuario_id
+  nome
+  localizacao
+  area
+}
+
+entity "Lote" as lote {
+  * id
+  --
+  usuario_id
+  nome
+  quantidade_cabecas
+  status
+}
+
+entity "Vacina" as vacina {
+  * id
+  --
+  nome
+  tipo
+  fabricante
+  dias_carencia
+  obrigatoria
+}
+
+entity "ManejoSanitario" as manejo {
+  * id
+  --
+  lote_id
+  vacina_id
+  data_aplicacao
+  data_liberacao
+  observacao
+}
+
+usuario ||--o| propriedade : possui
+usuario ||--o{ lote : cadastra
+lote ||--o{ manejo : recebe
+vacina ||--o{ manejo : utilizada em
+
+@enduml

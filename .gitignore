@@ -1,13 +1,31 @@
+# Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 env/
+.pytest_cache/
+
+# Banco de dados local e dados reais
 instance/
 *.db
 *.sqlite
 *.sqlite3
+backup_local/
+
+# Arquivos de configuração e credenciais
 .env
+.env.*
+!.env.example
+
+# Logs
 *.log
-.pytest_cache/
+
+# Sistema operacional
 .DS_Store
+
+# Dump SQLite com dados pessoais reais
+docs/dump_bovimonitor.sql
+
+# Backups locais das exportações SQL
+docs/*_backup.sql

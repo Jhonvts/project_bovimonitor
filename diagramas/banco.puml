@@ -1,43 +1,78 @@
+
 @startuml banco
-entity "Usuario" {
-  * id_usuario : INT <<PK>>
+
+title Modelo Físico do Banco de Dados - BoviMonitor (MariaDB)
+
+hide methods
+hide stereotypes
+skinparam linetype ortho
+
+entity "Usuario" as usuario {
+  * id : INT <<PK>>
   --
   nome : VARCHAR(100)
-  email : VARCHAR(100)
+  email : VARCHAR(120) <<UNIQUE>>
+  telefone : VARCHAR(20)
   senha_hash : VARCHAR(255)
+  perfil : VARCHAR(20)
 }
 
-entity "Lote" {
-  * id_lote : INT <<PK>>
+entity "Propriedade" as propriedade {
+  * id : INT <<PK>>
   --
-  id_usuario : INT <<FK>>
-  nome_lote : VARCHAR(50)
+  usuario_id : INT <<FK, UNIQUE>>
+  nome : VARCHAR(120)
+  localizacao : VARCHAR(200)
+  area : FLOAT
+}
+
+entity "Lote" as lote {
+  * id : INT <<PK>>
+  --
+  usuario_id : INT <<FK>>
+  nome : VARCHAR(100)
   quantidade_cabecas : INT
-  data_criacao : DATE
+  status : VARCHAR(30)
 }
 
-entity "Pesagem" {
-  * id_pesagem : INT <<PK>>
+entity "Vacina" as vacina {
+  * id : INT <<PK>>
   --
-  id_lote : INT <<FK>>
-  data_pesagem : DATE
-  peso_total_kg : DECIMAL(10,2)
-  media_kg_cabeca : DECIMAL(10,2)
-  total_arrobas : DECIMAL(10,2)
+  nome : VARCHAR(100) <<UNIQUE>>
+  tipo : VARCHAR(20)
+  fabricante : VARCHAR(100)
+  dias_carencia : INT
+  obrigatoria : BOOLEAN
 }
 
-entity "Insumo" {
-  * id_insumo : INT <<PK>>
+entity "ManejoSanitario" as manejo {
+  * id : INT <<PK>>
   --
-  id_lote : INT <<FK>>
-  nome_insumo : VARCHAR(100)
-  quantidade : DECIMAL(10,2)
-  unidade_medida : VARCHAR(20)
-  custo_total : DECIMAL(10,2)
+  lote_id : INT <<FK>>
+  vacina_id : INT <<FK>>
+  data_aplicacao : DATE
+  data_liberacao : DATE
+  observacao : VARCHAR(300)
 }
 
-Usuario ||--o{ Lote : "possui"
-Lote ||--o{ Pesagem : "registra"
-Lote ||--o{ Insumo : "consome"
+entity "AuditoriaLotes" as auditoria {
+  * id : INT <<PK>>
+  --
+  lote_id : INT
+  nome_lote : VARCHAR(100)
+  data_registro : TIMESTAMP
+}
+
+usuario ||--o| propriedade : possui
+usuario ||--o{ lote : cadastra
+lote ||--o{ manejo : recebe
+vacina ||--o{ manejo : utilizada em
+
+note bottom of auditoria
+  Tabela preenchida pela trigger
+  trg_novo_lote.
+  Não possui chave estrangeira
+  para Lote no esquema atual.
+end note
 
 @enduml

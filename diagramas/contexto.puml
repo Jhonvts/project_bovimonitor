@@ -1,16 +1,26 @@
+
 @startuml contexto
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
-TITLE Diagrama de Contexto - Sistema BovinoMotor
+title Diagrama de Contexto - BoviMonitor
 
-Person(produtor, "Produtor Rural", "Utiliza o sistema para gerenciar pesagens, insumos e relatórios da propriedade.")
-System(bovinomotor, "BovinoMotor", "Sistema de Gestão Agropecuária para cálculo de arrobas, controle de lote e manejo de insumos.")
+left to right direction
 
-System_Ext(balanca, "Sistema da Balança Digital", "Fornece dados de pesagem dos animais (opcional/integração externa).")
-System_Ext(clima, "Serviço de Previsão do Tempo", "Fornece dados meteorológicos para planejamento de manejo.")
+actor "Produtor Rural /\nResponsável pelo Rebanho" as produtor
 
-Rel(produtor, bovinomotor, "Gerencia lotes, cadastra insumos e visualiza relatórios")
-Rel(balanca, bovinomotor, "Envia dados de peso bruto")
-Rel(bovinomotor, clima, "Consulta previsão do tempo")
+rectangle "BoviMonitor" as sistema {
+  usecase "Gerenciar lotes" as UC1
+  usecase "Cadastrar vacinas\ne medicamentos" as UC2
+  usecase "Registrar manejo\nsanitário" as UC3
+  usecase "Acompanhar períodos\nde carência" as UC4
+  usecase "Consultar histórico\ne relatórios" as UC5
+  usecase "Acompanhar vacinas\nobrigatórias" as UC6
+}
+
+produtor --> UC1
+produtor --> UC2
+produtor --> UC3
+produtor --> UC4
+produtor --> UC5
+produtor --> UC6
 
 @enduml
