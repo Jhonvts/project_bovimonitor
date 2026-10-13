@@ -49,7 +49,7 @@ login_manager.login_view = "login"
 login_manager.login_message = "Entre na sua conta para acessar esta página."
 login_manager.login_message_category = "warning"
 
-#isso nao é de Deus nao
+# isso nao é de Deus nao
 # ==========================================================
 # MODELOS DO BANCO
 # ==========================================================
