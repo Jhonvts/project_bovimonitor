@@ -680,12 +680,6 @@ def inicializar_banco():
             )
             admin.definir_senha(os.environ.get("ADMIN_INITIAL_PASSWORD", "2345MEIA78"))
             db.session.add(admin)
-        if Vacina.query.count() == 0:
-            db.session.add_all([
-                Vacina(nome="Febre aftosa (exemplo)", tipo="Vacina", fabricante="A preencher", dias_carencia=0, obrigatoria=True),
-                Vacina(nome="Vermífugo (exemplo)", tipo="Medicamento", fabricante="A preencher", dias_carencia=14, obrigatoria=False),
-                Vacina(nome="Brucelose (exemplo)", tipo="Vacina", fabricante="A preencher", dias_carencia=0, obrigatoria=True),
-            ])
         db.session.commit()
 
 
