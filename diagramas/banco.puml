@@ -1,0 +1,78 @@
+
+@startuml banco
+
+title Modelo Físico do Banco de Dados - BoviMonitor (MariaDB)
+
+hide methods
+hide stereotypes
+skinparam linetype ortho
+
+entity "Usuario" as usuario {
+  * id : INT <<PK>>
+  --
+  nome : VARCHAR(100)
+  email : VARCHAR(120) <<UNIQUE>>
+  telefone : VARCHAR(20)
+  senha_hash : VARCHAR(255)
+  perfil : VARCHAR(20)
+}
+
+entity "Propriedade" as propriedade {
+  * id : INT <<PK>>
+  --
+  usuario_id : INT <<FK, UNIQUE>>
+  nome : VARCHAR(120)
+  localizacao : VARCHAR(200)
+  area : FLOAT
+}
+
+entity "Lote" as lote {
+  * id : INT <<PK>>
+  --
+  usuario_id : INT <<FK>>
+  nome : VARCHAR(100)
+  quantidade_cabecas : INT
+  status : VARCHAR(30)
+}
+
+entity "Vacina" as vacina {
+  * id : INT <<PK>>
+  --
+  nome : VARCHAR(100) <<UNIQUE>>
+  tipo : VARCHAR(20)
+  fabricante : VARCHAR(100)
+  dias_carencia : INT
+  obrigatoria : BOOLEAN
+}
+
+entity "ManejoSanitario" as manejo {
+  * id : INT <<PK>>
+  --
+  lote_id : INT <<FK>>
+  vacina_id : INT <<FK>>
+  data_aplicacao : DATE
+  data_liberacao : DATE
+  observacao : VARCHAR(300)
+}
+
+entity "AuditoriaLotes" as auditoria {
+  * id : INT <<PK>>
+  --
+  lote_id : INT
+  nome_lote : VARCHAR(100)
+  data_registro : TIMESTAMP
+}
+
+usuario ||--o| propriedade : possui
+usuario ||--o{ lote : cadastra
+lote ||--o{ manejo : recebe
+vacina ||--o{ manejo : utilizada em
+
+note bottom of auditoria
+  Tabela preenchida pela trigger
+  trg_novo_lote.
+  Não possui chave estrangeira
+  para Lote no esquema atual.
+end note
+
+@enduml

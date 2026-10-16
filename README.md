@@ -1,53 +1,91 @@
-| 🐂 BoviMonitor: Sistema de Controle Sanitário e Manejo de Rebanhos. O BoviMonitor é um sistema desenvolvido para auxiliar pecuaristas e responsáveis pelo manejo de rebanhos no registro, acompanhamento e organização das vacinações e procedimentos sanitários realizados nos lotes de gado. A proposta do projeto é facilitar o controle das informações relacionadas ao manejo, evitando esquecimentos e tornando mais simples o acompanhamento de datas de aplicação, tipos de vacina ou medicamento, lotes envolvidos e períodos de carência.
 
-| 🎯 Objetivo: O principal objetivo do BoviMonitor é oferecer uma ferramenta que facilite o gerenciamento sanitário do rebanho, permitindo que o usuário tenha maior controle sobre:
+# 🐂 BoviMonitor: Sistema de Controle Sanitário e Manejo de Rebanhos
+
+O BoviMonitor é um sistema desenvolvido para auxiliar pecuaristas e responsáveis pelo manejo de rebanhos no registro, acompanhamento e organização das vacinações e procedimentos sanitários realizados nos lotes de gado.
+
+## 🎯 Objetivo
+
+Facilitar o gerenciamento sanitário do rebanho, permitindo:
 
 - Cadastro e acompanhamento dos lotes;
 - Registro de vacinas e medicamentos;
-- Data de aplicação dos procedimentos;
-- Controle dos dias de carência;
+- Controle das datas de aplicação e dos períodos de carência;
 - Identificação de lotes temporariamente bloqueados para venda;
 - Histórico de manejos sanitários;
 - Acompanhamento de vacinas obrigatórias;
 - Consulta de informações e relatórios do rebanho.
 
-| 👥 Público-alvo: O sistema é voltado principalmente para pecuaristas, que precisam acompanhar a situação sanitária de seus animais, capatazes e gerentes de fazenda, responsáveis pelo registro dos procedimentos realizados no curral e responsáveis pelo controle e organização do manejo do rebanho.
+## 👥 Público-alvo
 
-| ⚙️ Funcionamento: O fluxo principal do sistema começa com a seleção de um lote e o registro do procedimento sanitário realizado. Após informar a vacina ou medicamento e a data da aplicação, o sistema verifica as informações relacionadas ao período de carência. Quando houver período de carência, a data de liberação é calculada automaticamente com base na data da aplicação e na quantidade de dias definida para o medicamento. Durante esse período, o lote pode ser sinalizado como bloqueado para venda. O sistema também permite o acompanhamento de vacinas obrigatórias, atualizando o calendário sanitário quando uma aplicação é registrada.
+O sistema é voltado para pecuaristas, capatazes, gerentes de fazenda e responsáveis pelo controle sanitário e pela organização do manejo do rebanho.
 
+## ⚙️ Funcionamento
 
-| 🗃️ Estrutura do Banco de Dados: O modelo de dados do BoviMonitor é composto principalmente por três entidades:
+O usuário seleciona um lote e registra o procedimento sanitário realizado, informando a vacina ou o medicamento e a data de aplicação. Com base nos dias de carência cadastrados, o sistema calcula a data de liberação e pode indicar que o lote está temporariamente bloqueado para venda.
 
-| 🐄 Lote: Armazena informações relacionadas aos lotes de animais.
+## 🗃️ Estrutura do banco de dados
 
-- id;
-- nome;
-- quantidade_cabecas;
-- status;
+As principais entidades do sistema incluem:
 
-| 💉 Vacina: Armazena informações sobre vacinas e medicamentos utilizados no manejo.
+- **Lote:** identificação, nome, quantidade de cabeças e status.
+- **Vacina:** nome, fabricante, dias de carência e indicação de obrigatoriedade.
+- **Manejo Sanitário:** lote relacionado, vacina ou medicamento, data de aplicação e data de liberação.
 
-- id;
-- nome;
-- fabricante;
-- dias_carencia;
-- obrigatoria.
+O projeto também contém arquivos SQL e diagramas para documentar a estrutura do banco de dados.
 
-|📋 Manejo Sanitário: Registra a aplicação de vacinas ou medicamentos em cada lote.
+## ✅ Funcionalidades implementadas na versão backend
 
-- id;
-- lote_id;
-- vacina_id;
-- data_aplicacao;
-- data_liberacao.
+- Cadastro e login com hash de senha e gerenciamento de sessão.
+- Consulta e edição de perfil.
+- Exclusão de conta, conforme as regras implementadas no sistema.
+- Cadastro e edição de propriedades rurais.
+- Cadastro, edição e gerenciamento de lotes.
+- Cadastro e gerenciamento de vacinas e medicamentos.
+- Registro e edição de manejos sanitários.
+- Cálculo da data de liberação conforme o período de carência.
+- Indicação de bloqueio temporário por carência.
+- API de lotes com métodos GET, POST, PUT e DELETE.
+- Registro local de eventos.
+- Templates Jinja com herança de `base.html` e CSS responsivo.
 
-A relação entre essas entidades permite identificar qual vacina foi aplicada em determinado lote e em qual data, além de possibilitar o controle do período de carência.
+## 📁 Estrutura dos templates ativos
 
-| 👨‍💻 Contribuidores
+```text
+templates/
+  base.html
+  cadastro.html
+  cadastro_propriedade.html
+  dashboard.html
+  editar_lote.html
+  editar_manejo.html
+  editar_perfil.html
+  editar_propriedade.html
+  editar_vacina.html
+  erro.html
+  excluir_perfil.html
+  login.html
+  lotes.html
+  manejos.html
+  perfil.html
+  vacinas.html
+```
 
-| Integrantes:            
-| Jhonatas Tavares (@Jhonvts) -                  
-| Manoela de Deus (@manoela2008) -  
-| Sophie Sugano (@sophiiesm) -                       
-| Isabelly Rodrigues (@isabellyRodrgs) -              
+Os templates antigos foram substituídos funcionalmente pelas páginas atuais, conforme a organização da branch `backend`.
 
+## 👨‍💻 Integrantes do projeto
+
+- Jhonatas Tavares (@Jhonvts) — templates e organização do Kanban.
+- Manoela de Deus (@manoela2008) — templates e gráficos.
+- Sophie Sugano (@sophiiesm) — backend.
+- Isabelly Rodrigues (@isabellyRodrgs) — frontend/CSS.
+
+## 📌 Pendências de validação
+
+- Revisão da integração entre as branches e dos commits individuais.
+- Revisão de segurança, incluindo proteção CSRF e permissões.
+- Validação do banco de dados, usuários, privilégios, funções, procedures e triggers.
+- Testes de integração.
+- Deploy no PythonAnywhere.
+- Finalização da documentação e do pitch deck.
+
+O BoviMonitor é um projeto acadêmico em desenvolvimento e precisa de testes e revisão antes de ser utilizado com dados reais.

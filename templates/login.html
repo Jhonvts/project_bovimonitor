@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Entrar · BoviMonitor{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="eyebrow">GESTÃO SANITÁRIA DO REBANHO</div>
+  <h1>Bem-vindo de volta</h1>
+  <p class="muted">Entre para acompanhar os lotes e manejos da propriedade.</p>
+  <form method="post" class="form-stack">
+    <label>E-mail<input type="email" name="email" required autocomplete="username"></label>
+    <label>Senha<input type="password" name="senha" required autocomplete="current-password"></label>
+    <button class="button" type="submit">Entrar</button>
+  </form>
+  <p class="muted center">Ainda não tem conta? <a href="{{ url_for('cadastro') }}">Cadastre-se</a></p>
+</section>
+{% endblock %}

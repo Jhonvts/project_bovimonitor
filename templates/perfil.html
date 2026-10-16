@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Meu perfil · BoviMonitor{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">SUA CONTA</div>
+        <h1>Meu perfil</h1>
+        <p>Consulte e atualize suas informações e os dados da propriedade.</p>
+    </div>
+</div>
+<section class="panel">
+    <div class="section-heading">
+        <h2>Dados do usuário</h2><a class="button button-small button-outline"
+            href="{{ url_for('editar_perfil') }}">Editar perfil</a>
+    </div>
+    <div class="form-grid">
+        <p><strong>Nome</strong><br>{{ usuario.nome }}</p>
+        <p><strong>E-mail</strong><br>{{ usuario.email }}</p>
+        <p><strong>Telefone</strong><br>{{ usuario.telefone or 'Não informado' }}</p>
+    </div>
+</section>
+<section class="panel">
+    <div class="section-heading">
+        <h2>Minha propriedade rural</h2>
+        {% if propriedade %}<a class="button button-small button-outline"
+            href="{{ url_for('editar_propriedade') }}">Editar propriedade</a>{% endif %}
+    </div>
+    {% if propriedade %}
+    <div class="form-grid">
+        <p><strong>Nome</strong><br>{{ propriedade.nome }}</p>
+        <p><strong>Localização</strong><br>{{ propriedade.localizacao }}</p>
+        <p><strong>Área</strong><br>{{ propriedade.area }} hectare(s)</p>
+    </div>
+    {% else %}
+    <p class="empty">Você ainda não cadastrou sua propriedade rural.</p>
+    <a class="button" href="{{ url_for('cadastrar_propriedade') }}">Cadastrar propriedade</a>
+    {% endif %}
+</section>
+<section class="panel">
+    <h2>Conta</h2>
+    <p class="muted">A exclusão da conta também remove os lotes, manejos e a propriedade vinculados a ela.</p>
+    <a class="button button-danger" href="{{ url_for('excluir_perfil') }}">Excluir minha conta</a>
+</section>
+{% endblock %}

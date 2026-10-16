@@ -1,0 +1,26 @@
+
+@startuml contexto
+
+title Diagrama de Contexto - BoviMonitor
+
+left to right direction
+
+actor "Produtor Rural /\nResponsável pelo Rebanho" as produtor
+
+rectangle "BoviMonitor" as sistema {
+  usecase "Gerenciar lotes" as UC1
+  usecase "Cadastrar vacinas\ne medicamentos" as UC2
+  usecase "Registrar manejo\nsanitário" as UC3
+  usecase "Acompanhar períodos\nde carência" as UC4
+  usecase "Consultar histórico\ne relatórios" as UC5
+  usecase "Acompanhar vacinas\nobrigatórias" as UC6
+}
+
+produtor --> UC1
+produtor --> UC2
+produtor --> UC3
+produtor --> UC4
+produtor --> UC5
+produtor --> UC6
+
+@enduml

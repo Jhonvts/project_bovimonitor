@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Vacinas · BoviMonitor{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">CALENDÁRIO SANITÁRIO</div>
+        <h1>Vacinas e medicamentos</h1>
+        <p>Cadastre os itens utilizados e seus períodos de carência.</p>
+    </div>
+</div>
+<section class="panel">
+    <h2>Novo item</h2>
+    <form method="post" class="form-grid">
+        <label>Nome<input name="nome" maxlength="100" required placeholder="Nome da vacina ou medicamento"></label>
+        <label>Tipo<select name="tipo" required>
+                <option value="Vacina">Vacina</option>
+                <option value="Medicamento">Medicamento</option>
+            </select></label>
+        <label>Fabricante<input name="fabricante" maxlength="100" placeholder="Fabricante (opcional)"></label>
+        <label>Dias de carência<input type="number" name="dias_carencia" min="0" required value="0"></label>
+        <label class="check-label"><input type="checkbox" name="obrigatoria"> Marcar como obrigatória</label>
+        <div><button class="button" type="submit">+ Cadastrar item</button></div>
+    </form>
+</section>
+<section class="panel">
+    <div class="section-heading">
+        <h2>Itens cadastrados</h2>
+    </div>
+    {% if vacinas %}<div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Fabricante</th>
+                    <th>Carência</th>
+                    <th>Obrigatória</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in vacinas %}<tr>
+                    <td><strong>{{ v.nome }}</strong></td>
+                    <td>{{ v.tipo }}</td>
+                    <td>{{ v.fabricante or '—' }}</td>
+                    <td>{{ v.dias_carencia }} dia(s)</td>
+                    <td>{{ 'Sim' if v.obrigatoria else 'Não' }}</td>
+                    <td class="actions"><a class="button button-small button-outline"
+                            href="{{ url_for('editar_vacina', vacina_id=v.id) }}">Editar</a>
+                        <form method="post" action="{{ url_for('excluir_vacina', vacina_id=v.id) }}"
+                            onsubmit="return confirm('Excluir este item?');"><button
+                                class="button button-small button-danger" type="submit">Excluir</button></form>
+                    </td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>{% else %}<p class="empty">Nenhuma vacina cadastrada.</p>{% endif %}
+</section>
+{% endblock %}

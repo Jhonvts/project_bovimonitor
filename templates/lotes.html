@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Lotes · BoviMonitor{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">REBANHO</div>
+    <h1>Registro de lotes</h1>
+    <p>Organize os grupos de animais da propriedade.</p>
+  </div>
+</div>
+<section class="panel">
+  <h2>Novo lote</h2>
+  <form method="post" class="inline-form">
+    <label>Nome do lote<input name="nome" maxlength="100" placeholder="Ex.: Lote Nelore 01" required></label>
+    <label>Quantidade de cabeças<input type="number" name="quantidade_cabecas" min="1" required
+        placeholder="Ex.: 45"></label>
+    <button class="button" type="submit">+ Cadastrar lote</button>
+  </form>
+</section>
+<section class="panel">
+  <div class="section-heading">
+    <h2>Lotes cadastrados</h2><span class="muted">{{ lotes|length }} registro(s)</span>
+  </div>
+  {% if lotes %}<div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Cabeças</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lote in lotes %}<tr>
+          <td><strong>{{ lote.nome }}</strong></td>
+          <td>{{ lote.quantidade_cabecas }}</td>
+          <td><span class="pill pill-success">{{ lote.status }}</span></td>
+          <td class="actions"><a class="button button-small button-outline"
+              href="{{ url_for('editar_lote', lote_id=lote.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('excluir_lote', lote_id=lote.id) }}"
+              onsubmit="return confirm('Excluir este lote?');"><button class="button button-small button-danger"
+                type="submit">Excluir</button></form>
+          </td>
+        </tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>{% else %}<p class="empty">Nenhum lote cadastrado ainda.</p>{% endif %}
+</section>
+{% endblock %}

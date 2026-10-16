@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Editar propriedade · BoviMonitor{% endblock %}
+{% block content %}
+<section class="panel narrow">
+    <div class="eyebrow">PROPRIEDADE RURAL</div>
+    <h1>Editar propriedade</h1>
+    <form method="post" class="form-stack">
+        <label>Nome da propriedade<input name="nome" maxlength="120" required value="{{ propriedade.nome }}"></label>
+        <label>Localização<input name="localizacao" maxlength="200" required
+                value="{{ propriedade.localizacao }}"></label>
+        <label>Área (hectares)<input type="number" name="area" min="0.01" step="any" required
+                value="{{ propriedade.area }}"></label>
+        <div class="actions"><button class="button" type="submit">Salvar alterações</button><a
+                class="button button-outline" href="{{ url_for('perfil') }}">Cancelar</a></div>
+    </form>
+</section>
+{% endblock %}

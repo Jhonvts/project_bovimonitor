@@ -1,0 +1,25 @@
+
+@startuml container
+
+title Diagrama de Contêineres - BoviMonitor
+
+left to right direction
+skinparam componentStyle rectangle
+
+actor "Responsável pelo\nRebanho" as produtor
+
+rectangle "Navegador Web" {
+    component "Interface Web\nHTML5 / CSS3" as web
+}
+
+rectangle "Servidor" {
+    component "Aplicação Flask\nPython" as flask
+}
+
+database "SQLite\nbovimonitor.db" as db
+
+produtor --> web : Acessa
+web --> flask : Solicitações HTTP
+flask --> db : Consultas SQL
+
+@enduml

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Editar perfil · BoviMonitor{% endblock %}
+{% block content %}
+<section class="panel narrow">
+    <div class="eyebrow">SUA CONTA</div>
+    <h1>Editar perfil</h1>
+    <form method="post" class="form-stack">
+        <label>Nome<input name="nome" maxlength="100" required value="{{ usuario.nome }}" autocomplete="name"></label>
+        <label>E-mail<input type="email" value="{{ usuario.email }}" disabled></label>
+        <label>Telefone<input name="telefone" maxlength="20" value="{{ usuario.telefone or '' }}"
+                autocomplete="tel"></label>
+        <div class="actions"><button class="button" type="submit">Salvar alterações</button><a
+                class="button button-outline" href="{{ url_for('perfil') }}">Cancelar</a></div>
+    </form>
+</section>
+{% endblock %}

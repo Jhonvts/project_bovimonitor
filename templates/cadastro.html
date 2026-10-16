@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Criar conta · BoviMonitor{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <div class="eyebrow">COMECE A ORGANIZAR</div>
+  <h1>Criar conta</h1>
+  <form method="post" class="form-stack">
+    <label>Nome<input name="nome" maxlength="100" required autocomplete="name"></label>
+    <label>E-mail<input type="email" name="email" maxlength="120" required autocomplete="email"></label>
+    <label>Telefone (opcional)<input name="telefone" maxlength="20" autocomplete="tel"></label>
+    <label>Senha (mínimo 8 caracteres)<input type="password" name="senha" minlength="8" required
+        autocomplete="new-password"></label>
+    <button class="button" type="submit">Criar conta</button>
+  </form>
+  <p class="muted center">Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+</section>
+{% endblock %}

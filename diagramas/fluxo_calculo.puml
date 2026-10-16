@@ -1,0 +1,23 @@
+
+@startuml fluxo_manejo_sanitario
+
+title Fluxograma do Manejo Sanitário - BoviMonitor
+
+start
+:Selecionar lote;
+:Selecionar vacina ou medicamento;
+:Informar data da aplicação;
+:Consultar dias de carência;
+
+if (Dias de carência maiores que zero?) then (Sim)
+    :Calcular data de liberação;
+    :Registrar manejo;
+    :Sinalizar bloqueio temporário para venda;
+else (Não)
+    :Registrar manejo sem carência;
+endif
+
+:Disponibilizar registro para consulta;
+stop
+
+@enduml
