@@ -262,18 +262,29 @@ def editar_perfil():
     return render_template("editar_perfil.html", usuario=current_user)
 
 
+
 @app.route("/perfil/excluir", methods=["GET", "POST"])
 @login_required
 def excluir_perfil():
+    # Impede que o administrador exclua a própria conta.
+    if current_user.perfil == "admin":
+        flash("O administrador não pode excluir o próprio perfil.", "danger")
+        return redirect(url_for("perfil"))
+
     if request.method == "POST":
         usuario = db.session.get(Usuario, current_user.id)
+
         registrar_evento("solicitou exclusão da conta")
         logout_user()
+
         db.session.delete(usuario)
         db.session.commit()
+
         flash("Conta e dados vinculados foram excluídos.", "info")
         return redirect(url_for("login"))
+
     return render_template("excluir_perfil.html")
+
 
 
 @app.route("/propriedade/cadastro", methods=["GET", "POST"])
@@ -673,13 +684,24 @@ def nao_encontrado(_):
 def inicializar_banco():
     with app.app_context():
         db.create_all()
+
         if not Usuario.query.filter_by(email="admin@gmail.com").first():
             admin = Usuario(
-                nome="Administrador", email="admin@gmail.com",
+                nome="Administrador",
+                email="admin@gmail.com",
                 perfil="admin"
             )
-            admin.definir_senha(os.environ.get("ADMIN_INITIAL_PASSWORD", "2345MEIA78"))
+
+            senha_admin = os.environ.get("ADMIN_INITIAL_PASSWORD")
+
+            if not senha_admin:
+                raise RuntimeError(
+                    "Configure ADMIN_INITIAL_PASSWORD no arquivo .env"
+                )
+
+            admin.definir_senha(senha_admin)
             db.session.add(admin)
+
         db.session.commit()
 
 
