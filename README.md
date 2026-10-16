@@ -1,26 +1,54 @@
-## Grupo do projeto original
 
-- Jhonatas Tavares — templates e organização do Kanban
-- Manoela de Deus — templates e gráficos
-- Sophie Sugano — backend
-- Isabelly Rodrigues — frontend/CSS
+# 🐂 BoviMonitor: Sistema de Controle Sanitário e Manejo de Rebanhos
 
-Os quatro arquivos PlantUML enviados no repositório original foram preservados em `diagramas/`. O README original da branch backend foi guardado em `docs/README_branch_backend_original.md` para referência.
+O BoviMonitor é um sistema desenvolvido para auxiliar pecuaristas e responsáveis pelo manejo de rebanhos no registro, acompanhamento e organização das vacinações e procedimentos sanitários realizados nos lotes de gado.
 
-## Funcionalidades incluídas
+## 🎯 Objetivo
 
-- Cadastro/login com hash de senha e gerenciamento de sessão.
-- Perfil: consultar/editar nome e telefone e excluir conta.
-- Propriedade rural: cadastrar e editar nome, localização e área.
-- CRUD de lotes, com isolamento dos lotes por usuário.
-- CRUD de vacinas/medicamentos e cálculo da carência.
-- CRUD de manejos com cálculo de data de liberação.
+Facilitar o gerenciamento sanitário do rebanho, permitindo:
+
+- Cadastro e acompanhamento dos lotes;
+- Registro de vacinas e medicamentos;
+- Controle das datas de aplicação e dos períodos de carência;
+- Identificação de lotes temporariamente bloqueados para venda;
+- Histórico de manejos sanitários;
+- Acompanhamento de vacinas obrigatórias;
+- Consulta de informações e relatórios do rebanho.
+
+## 👥 Público-alvo
+
+O sistema é voltado para pecuaristas, capatazes, gerentes de fazenda e responsáveis pelo controle sanitário e pela organização do manejo do rebanho.
+
+## ⚙️ Funcionamento
+
+O usuário seleciona um lote e registra o procedimento sanitário realizado, informando a vacina ou o medicamento e a data de aplicação. Com base nos dias de carência cadastrados, o sistema calcula a data de liberação e pode indicar que o lote está temporariamente bloqueado para venda.
+
+## 🗃️ Estrutura do banco de dados
+
+As principais entidades do sistema incluem:
+
+- **Lote:** identificação, nome, quantidade de cabeças e status.
+- **Vacina:** nome, fabricante, dias de carência e indicação de obrigatoriedade.
+- **Manejo Sanitário:** lote relacionado, vacina ou medicamento, data de aplicação e data de liberação.
+
+O projeto também contém arquivos SQL e diagramas para documentar a estrutura do banco de dados.
+
+## ✅ Funcionalidades implementadas na versão backend
+
+- Cadastro e login com hash de senha e gerenciamento de sessão.
+- Consulta e edição de perfil.
+- Exclusão de conta, conforme as regras implementadas no sistema.
+- Cadastro e edição de propriedades rurais.
+- Cadastro, edição e gerenciamento de lotes.
+- Cadastro e gerenciamento de vacinas e medicamentos.
+- Registro e edição de manejos sanitários.
+- Cálculo da data de liberação conforme o período de carência.
 - Indicação de bloqueio temporário por carência.
 - API de lotes com métodos GET, POST, PUT e DELETE.
-- Log de eventos locais.
+- Registro local de eventos.
 - Templates Jinja com herança de `base.html` e CSS responsivo.
 
-## Templates ativos nesta versão
+## 📁 Estrutura dos templates ativos
 
 ```text
 templates/
@@ -42,13 +70,22 @@ templates/
   vacinas.html
 ```
 
-Os templates antigos `inicio.html`, `registroLotes.html`, `historico_deVacinas.html`, `editarLotes.html`, `cadastroManejoeVacinas.html` e `resumo_Vacinas.html` são substituídos funcionalmente pelas páginas do conjunto acima. Não os apague da branch original sem revisar e registrar a integração com a equipe.
+Os templates antigos foram substituídos funcionalmente pelas páginas atuais, conforme a organização da branch `backend`.
 
-## Requisitos ainda a validar para a entrega da disciplina
+## 👨‍💻 Integrantes do projeto
 
-- Integração com as branches e revisão dos commits individuais.
-- Segurança adicional, por exemplo proteção CSRF e revisão das permissões do catálogo compartilhado.
-- Banco exigido na disciplina: usuários com privilégios mínimos, função/procedure, trigger, dump e modelos lógico/físico.
-- Testes de integração, deploy no PythonAnywhere, documentação e pitch deck.
+- Jhonatas Tavares (@Jhonvts) — templates e organização do Kanban.
+- Manoela de Deus (@manoela2008) — templates e gráficos.
+- Sophie Sugano (@sophiiesm) — backend.
+- Isabelly Rodrigues (@isabellyRodrgs) — frontend/CSS.
 
-Esta é uma base de desenvolvimento acadêmica e precisa de revisão e testes antes de ser usada com dados reais.
+## 📌 Pendências de validação
+
+- Revisão da integração entre as branches e dos commits individuais.
+- Revisão de segurança, incluindo proteção CSRF e permissões.
+- Validação do banco de dados, usuários, privilégios, funções, procedures e triggers.
+- Testes de integração.
+- Deploy no PythonAnywhere.
+- Finalização da documentação e do pitch deck.
+
+O BoviMonitor é um projeto acadêmico em desenvolvimento e precisa de testes e revisão antes de ser utilizado com dados reais.
