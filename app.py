@@ -2,10 +2,15 @@ import logging
 import math
 import os
 from datetime import date, timedelta
-from functools import wraps
 from dotenv import load_dotenv
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_wtf.csrf import CSRFProtect
 
-from flask import Flask, abort, flash, jsonify, redirect, render_template, request, url_for
+from flask import (
+    Flask, flash, jsonify, redirect, render_template,
+    request, session, url_for
+)
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -15,8 +20,6 @@ from flask_login import (
     logout_user,
 )
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import event
-from sqlalchemy.engine import Engine
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -26,6 +29,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 load_dotenv()
 
 app = Flask(__name__)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=[]
+)
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
@@ -40,7 +49,31 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Segurança e duração da sessão
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30)
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = (
+    os.environ.get("SESSION_COOKIE_SECURE", "0") == "1"
+)
+
+csrf = CSRFProtect(app)
+
 os.makedirs(app.instance_path, exist_ok=True)
+
+# Configuração da auditoria em arquivo
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler(
+            os.path.join(app.instance_path, "bovimonitor.log"),
+            encoding="utf-8"
+        ),
+        logging.StreamHandler()
+    ],
+    force=True
+)
 
 db = SQLAlchemy(app)
 
@@ -49,7 +82,6 @@ login_manager.login_view = "login"
 login_manager.login_message = "Entre na sua conta para acessar esta página."
 login_manager.login_message_category = "warning"
 
-# isso nao é de Deus nao
 # ==========================================================
 # MODELOS DO BANCO
 # ==========================================================
@@ -135,8 +167,19 @@ def carregar_usuario(user_id):
 
 
 def registrar_evento(mensagem):
-    usuario_id = current_user.get_id() if current_user.is_authenticated else "anonimo"
-    logging.info("usuario_id=%s %s", usuario_id, mensagem)
+    usuario_id = (
+        current_user.get_id()
+        if current_user.is_authenticated
+        else "anonimo"
+    )
+    ip = request.remote_addr or "desconhecido"
+
+    logging.info(
+        "usuario_id=%s ip=%s evento=%s",
+        usuario_id,
+        ip,
+        mensagem
+    )
 
 
 def lote_do_usuario(lote_id):
@@ -158,16 +201,6 @@ def atualizar_status_lote(lote):
         ManejoSanitario.data_liberacao > date.today()
     ).count() > 0
     lote.status = "BLOQUEADO" if em_carencia else "ATIVO"
-
-
-def admin_required(view):
-    @wraps(view)
-    @login_required
-    def wrapped(*args, **kwargs):
-        if current_user.perfil != "admin":
-            abort(403)
-        return view(*args, **kwargs)
-    return wrapped
 
 
 # ==========================================================
@@ -207,6 +240,7 @@ def cadastro():
 
 
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("5 per minute", methods=["POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("dashboard"))
@@ -218,8 +252,11 @@ def login():
 
         if usuario and usuario.verificar_senha(senha):
             login_user(usuario)
+            session.permanent = True
             registrar_evento("realizou login")
             return redirect(url_for("dashboard"))
+
+        registrar_evento("tentativa de login malsucedida")
         flash("E-mail ou senha inválidos.", "danger")
 
     return render_template("login.html")
@@ -681,24 +718,30 @@ def nao_encontrado(_):
     ), 404
 
 
+
 def inicializar_banco():
     with app.app_context():
         db.create_all()
 
-        if not Usuario.query.filter_by(email="admin@gmail.com").first():
-            admin = Usuario(
-                nome="Administrador",
-                email="admin@gmail.com",
-                perfil="admin"
+        admin_email = os.environ.get("ADMIN_EMAIL", "").strip().lower()
+        senha_admin = os.environ.get("ADMIN_INITIAL_PASSWORD")
+
+        if not admin_email:
+            raise RuntimeError(
+                "Configure ADMIN_EMAIL no arquivo .env"
             )
 
-            senha_admin = os.environ.get("ADMIN_INITIAL_PASSWORD")
-
+        if not Usuario.query.filter_by(email=admin_email).first():
             if not senha_admin:
                 raise RuntimeError(
                     "Configure ADMIN_INITIAL_PASSWORD no arquivo .env"
                 )
 
+            admin = Usuario(
+                nome="Administrador",
+                email=admin_email,
+                perfil="admin"
+            )
             admin.definir_senha(senha_admin)
             db.session.add(admin)
 

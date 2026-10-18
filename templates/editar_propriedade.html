@@ -5,6 +5,7 @@
     <div class="eyebrow">PROPRIEDADE RURAL</div>
     <h1>Editar propriedade</h1>
     <form method="post" class="form-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Nome da propriedade<input name="nome" maxlength="120" required value="{{ propriedade.nome }}"></label>
         <label>Localização<input name="localizacao" maxlength="200" required
                 value="{{ propriedade.localizacao }}"></label>

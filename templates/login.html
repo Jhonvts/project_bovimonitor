@@ -6,6 +6,7 @@
   <h1>Bem-vindo de volta</h1>
   <p class="muted">Entre para acompanhar os lotes e manejos da propriedade.</p>
   <form method="post" class="form-stack">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label>E-mail<input type="email" name="email" required autocomplete="username"></label>
     <label>Senha<input type="password" name="senha" required autocomplete="current-password"></label>
     <button class="button" type="submit">Entrar</button>

@@ -5,6 +5,7 @@
   <div class="eyebrow">COMECE A ORGANIZAR</div>
   <h1>Criar conta</h1>
   <form method="post" class="form-stack">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label>Nome<input name="nome" maxlength="100" required autocomplete="name"></label>
     <label>E-mail<input type="email" name="email" maxlength="120" required autocomplete="email"></label>
     <label>Telefone (opcional)<input name="telefone" maxlength="20" autocomplete="tel"></label>

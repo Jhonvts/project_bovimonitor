@@ -12,6 +12,7 @@
     <h2>Novo manejo</h2>
     {% if lotes and vacinas %}
     <form method="post" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Lote<select name="lote_id" required>
                 <option value="">Selecione um lote</option>{% for l in lotes %}<option value="{{ l.id }}">{{ l.nome }}
                     ({{ l.quantidade_cabecas }} cabeças)</option>{% endfor %}

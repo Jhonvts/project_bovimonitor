@@ -5,6 +5,7 @@
     <div class="eyebrow">SUA CONTA</div>
     <h1>Editar perfil</h1>
     <form method="post" class="form-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Nome<input name="nome" maxlength="100" required value="{{ usuario.nome }}" autocomplete="name"></label>
         <label>E-mail<input type="email" value="{{ usuario.email }}" disabled></label>
         <label>Telefone<input name="telefone" maxlength="20" value="{{ usuario.telefone or '' }}"

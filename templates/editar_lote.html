@@ -5,6 +5,7 @@
     <div class="eyebrow">ATUALIZAÇÃO</div>
     <h1>Editar lote</h1>
     <form method="post" class="form-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Nome do lote<input name="nome" maxlength="100" required value="{{ lote.nome }}"></label>
         <label>Quantidade de cabeças<input type="number" name="quantidade_cabecas" min="1" required
                 value="{{ lote.quantidade_cabecas }}"></label>

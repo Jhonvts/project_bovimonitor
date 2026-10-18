@@ -19,6 +19,7 @@ Facilitar o gerenciamento sanitário do rebanho, permitindo:
 
 O sistema é voltado para pecuaristas, capatazes, gerentes de fazenda e responsáveis pelo controle sanitário e pela organização do manejo do rebanho.
 
+
 ## ⚙️ Funcionamento
 
 O usuário seleciona um lote e registra o procedimento sanitário realizado, informando a vacina ou o medicamento e a data de aplicação. Com base nos dias de carência cadastrados, o sistema calcula a data de liberação e pode indicar que o lote está temporariamente bloqueado para venda.
@@ -71,6 +72,19 @@ templates/
 ```
 
 Os templates antigos foram substituídos funcionalmente pelas páginas atuais, conforme a organização da branch `backend`.
+
+
+## Requisitos de execução
+
+- Python 3.10 ou superior, com suporte a `hashlib.scrypt`.
+- Dependências Python instaladas conforme `requirements.txt`.
+- Variáveis de ambiente configuradas conforme o arquivo `.env.example`.
+
+**Ambiente de desenvolvimento:** Python 3.13.x no Windows.
+
+A compatibilidade deve ser validada no ambiente de implantação, especialmente
+o suporte ao algoritmo de hash de senhas utilizado pelo Werkzeug.
+
 
 ## 👨‍💻 Integrantes do projeto
 

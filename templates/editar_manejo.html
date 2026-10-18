@@ -5,6 +5,7 @@
     <div class="eyebrow">HISTÓRICO SANITÁRIO</div>
     <h1>Editar manejo</h1>
     <form method="post" class="form-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Lote<select name="lote_id" required>{% for lote in lotes %}<option value="{{ lote.id }}" {% if
                     lote.id==manejo.lote_id %}selected{% endif %}>{{ lote.nome }} ({{ lote.quantidade_cabecas }}
                     cabeças)</option>{% endfor %}</select></label>

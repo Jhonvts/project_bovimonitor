@@ -11,6 +11,7 @@
 <section class="panel">
     <h2>Novo item</h2>
     <form method="post" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Nome<input name="nome" maxlength="100" required placeholder="Nome da vacina ou medicamento"></label>
         <label>Tipo<select name="tipo" required>
                 <option value="Vacina">Vacina</option>

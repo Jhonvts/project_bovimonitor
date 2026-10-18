@@ -8,6 +8,7 @@
         removidos.</p>
     <form method="post" class="actions"
         onsubmit="return confirm('Tem certeza que deseja excluir a conta e os dados vinculados?');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button class="button button-danger" type="submit">Sim, excluir minha conta</button>
         <a class="button button-outline" href="{{ url_for('perfil') }}">Cancelar</a>
     </form>

@@ -11,6 +11,7 @@
 <section class="panel">
   <h2>Novo lote</h2>
   <form method="post" class="inline-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label>Nome do lote<input name="nome" maxlength="100" placeholder="Ex.: Lote Nelore 01" required></label>
     <label>Quantidade de cabeças<input type="number" name="quantidade_cabecas" min="1" required
         placeholder="Ex.: 45"></label>

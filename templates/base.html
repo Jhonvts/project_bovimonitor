@@ -28,7 +28,9 @@
     </nav>
     <div class="user-area">
       <span>{{ current_user.nome }}</span>
-      <form method="post" action="{{ url_for('sair') }}"><button class="button button-quiet" type="submit">Sair</button>
+      <form method="post" action="{{ url_for('sair') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="button button-quiet" type="submit">Sair</button>
       </form>
     </div>
     {% endif %}

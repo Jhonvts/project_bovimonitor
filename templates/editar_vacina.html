@@ -5,6 +5,7 @@
     <div class="eyebrow">CATÁLOGO SANITÁRIO</div>
     <h1>Editar vacina/medicamento</h1>
     <form method="post" class="form-stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Nome<input name="nome" maxlength="100" required value="{{ vacina.nome }}"></label>
         <label>Tipo<select name="tipo" required>
                 <option value="Vacina" {% if vacina.tipo=='Vacina' %}selected{% endif %}>Vacina</option>
