@@ -1,73 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Painel · BoviMonitor{% endblock %}
 {% block content %}
-<section class="hero">
-  <div>
-    <div class="eyebrow">VISÃO GERAL</div>
-    <h1>Seu rebanho, mais organizado.</h1>
-    <p>Acompanhe os registros sanitários e as datas de liberação dos lotes.</p>
-  </div>
-  <div class="hero-mark">🐂</div>
-</section>
-<section class="stats">
-  <article class="stat"><span>Lotes cadastrados</span><strong>{{ lotes|length }}</strong></article>
-  <article class="stat"><span>Vacinas/medicamentos</span><strong>{{ vacinas|length }}</strong></article>
-  <article class="stat"><span>Lotes com manejo em carência</span><strong>{{ bloqueados }}</strong></article>
-</section>
-<div class="section-heading">
-  <div>
-    <div class="eyebrow">ACESSO RÁPIDO</div>
-    <h2>O que você precisa fazer?</h2>
-  </div>
+<section class="hero"><div><div class="eyebrow">VISÃO GERAL • {{ hoje.strftime('%d/%m/%Y') }}</div><h1>Olá, {{ current_user.nome.split(' ')[0] }}.</h1><p>Acompanhe a situação sanitária do seu rebanho e organize os próximos manejos.</p></div><a class="button" style="background:#e3b541;border-color:#e3b541;color:#243944" href="{{ url_for('manejos') }}">＋ Registrar manejo</a></section>
+<section class="stats"><article class="stat"><span>Lotes cadastrados</span><strong>{{ lotes|length }}</strong></article><article class="stat"><span>Cabeças de gado</span><strong>{{ cabecas }}</strong></article><article class="stat"><span>Itens no catálogo</span><strong>{{ vacinas|length }}</strong></article></section>
+<div class="quick-grid">
+  <section class="panel"><div class="section-heading"><div><div class="eyebrow">SITUAÇÃO SANITÁRIA</div><h2>Lotes em acompanhamento</h2></div><a href="{{ url_for('lotes') }}">Ver lotes →</a></div>
+    <div class="status-overview"><div class="donut" style="--blocked:{{ percentual_bloqueado }}%"><span>{{ lotes|length }}<small>lotes</small></span></div><div class="status-key"><p><i class="key-dot key-green"></i><strong>{{ liberados }}</strong> liberado(s)</p><p><i class="key-dot key-red"></i><strong>{{ bloqueados }}</strong> em carência</p></div></div>
+    {% if lotes %}<div class="table-wrap"><table><thead><tr><th>Lote</th><th>Cabeças</th><th>Situação</th></tr></thead><tbody>{% for lote in lotes %}{% set em_carencia = lote.manejos|selectattr('data_liberacao','gt',hoje)|list|length > 0 %}<tr><td><strong>{{ lote.nome }}</strong></td><td>{{ lote.quantidade_cabecas }}</td><td><span class="pill {{ 'pill-warning' if em_carencia else 'pill-success' }}">{{ 'Em carência' if em_carencia else 'Liberado' }}</span></td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty">Cadastre seu primeiro lote para começar a acompanhar o rebanho.</p>{% endif %}
+  </section>
+  <section class="panel"><div class="section-heading"><div><div class="eyebrow">PLANEJAMENTO</div><h2>Próximas liberações</h2></div></div>
+    {% if proximas_liberacoes %}{% for m in proximas_liberacoes %}<div class="release-row"><div><strong>{{ m.lote.nome }}</strong><small>{{ m.vacina.nome }} • aplicado em {{ m.data_aplicacao.strftime('%d/%m/%Y') }}</small></div><span>{{ m.data_liberacao.strftime('%d/%m/%Y') }}</span></div>{% endfor %}{% else %}<p class="empty">Não há períodos de carência ativos.</p>{% endif %}
+  </section>
 </div>
-<section class="quick-grid">
-  <a class="quick-card" href="{{ url_for('lotes') }}"><span class="quick-icon">🐄</span>
-    <h3>Gerenciar lotes</h3>
-    <p>Cadastre e atualize os lotes de animais.</p><span class="arrow">Abrir →</span>
-  </a>
-  <a class="quick-card" href="{{ url_for('vacinas') }}"><span class="quick-icon">💉</span>
-    <h3>Vacinas e medicamentos</h3>
-    <p>Organize carência e obrigatoriedade.</p><span class="arrow">Abrir →</span>
-  </a>
-  <a class="quick-card" href="{{ url_for('manejos') }}"><span class="quick-icon">📋</span>
-    <h3>Registrar manejo</h3>
-    <p>Registre uma aplicação e consulte a liberação.</p><span class="arrow">Abrir →</span>
-  </a>
-</section>
-<section class="panel">
-  <div class="section-heading">
-    <div>
-      <div class="eyebrow">ATIVIDADE RECENTE</div>
-      <h2>Últimos manejos</h2>
-    </div><a href="{{ url_for('manejos') }}">Ver histórico →</a>
-  </div>
-  {% if manejos %}
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Lote</th>
-          <th>Procedimento</th>
-          <th>Aplicação</th>
-          <th>Liberação</th>
-          <th>Situação</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for m in manejos %}
-        <tr>
-          <td>{{ m.lote.nome }}</td>
-          <td>{{ m.vacina.nome }}</td>
-          <td>{{ m.data_aplicacao.strftime('%d/%m/%Y') }}</td>
-          <td>{{ m.data_liberacao.strftime('%d/%m/%Y') }}</td>
-          <td><span class="pill {{ 'pill-warning' if m.data_liberacao > hoje else 'pill-success' }}">{{ 'Em carência' if
-              m.data_liberacao > hoje else 'Liberado' }}</span></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% else %}<p class="empty">Ainda não há manejos registrados. Comece cadastrando um lote e uma aplicação.</p>{% endif
-  %}
-</section>
+<section class="quick-grid"><a class="quick-card" href="{{ url_for('lotes') }}"><span class="quick-icon">🐄</span><h3>Gerenciar lotes</h3><p>Cadastre os grupos de animais e acompanhe a situação de cada um.</p><span class="arrow">Abrir lotes →</span></a><a class="quick-card" href="{{ url_for('vacinas') }}"><span class="quick-icon">✚</span><h3>Catálogo sanitário</h3><p>Consulte vacinas e medicamentos, com categorias e carências.</p><span class="arrow">Ver catálogo →</span></a><a class="quick-card" href="{{ url_for('manejos') }}"><span class="quick-icon">☷</span><h3>Histórico de manejos</h3><p>Registre aplicações e veja as datas de liberação.</p><span class="arrow">Ver histórico →</span></a></section>
+{% if current_user.perfil == 'admin' %}<section class="panel admin-callout"><div><div class="eyebrow">ADMINISTRAÇÃO</div><h2>Área de gestão do sistema</h2><p class="muted">Consulte usuários, revise os manejos registrados e acompanhe eventos de auditoria.</p></div><a class="button" href="{{ url_for('admin_painel') }}">Abrir painel administrativo →</a></section>{% endif %}
+<section class="panel"><div class="section-heading"><div><div class="eyebrow">ATIVIDADE RECENTE</div><h2>Últimos manejos</h2></div><a href="{{ url_for('manejos') }}">Ver histórico completo →</a></div>
+{% if manejos %}<div class="table-wrap"><table><thead><tr><th>Lote</th><th>Procedimento</th><th>Aplicação</th><th>Liberação</th><th>Situação</th></tr></thead><tbody>{% for m in manejos %}<tr><td>{{ m.lote.nome }}</td><td>{{ m.vacina.nome }}</td><td>{{ m.data_aplicacao.strftime('%d/%m/%Y') }}</td><td>{{ m.data_liberacao.strftime('%d/%m/%Y') }}</td><td><span class="pill {{ 'pill-warning' if m.data_liberacao > hoje else 'pill-success' }}">{{ 'Em carência' if m.data_liberacao > hoje else 'Liberado' }}</span></td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty">Ainda não há manejos registrados. Comece cadastrando um lote e uma aplicação.</p>{% endif %}</section>
 {% endblock %}

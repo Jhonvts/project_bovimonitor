@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Auditoria · BoviMonitor{% endblock %}{% block content %}
+<div class="page-heading"><div><div class="eyebrow">ADMINISTRAÇÃO</div><h1>Registro de eventos</h1><p>Eventos recentes gravados pela aplicação, com data, usuário e endereço IP.</p></div></div>
+<section class="panel"><div class="section-heading"><h2>Eventos mais recentes</h2><span class="muted">Até 150 linhas</span></div>{% if eventos %}<div class="audit-list">{% for evento in eventos %}<div class="audit-row">{{ evento }}</div>{% endfor %}</div>{% else %}<p class="empty">Nenhum evento foi registrado ainda. Os logs ficam no diretório instance/bovimonitor.log.</p>{% endif %}</section>
+{% endblock %}

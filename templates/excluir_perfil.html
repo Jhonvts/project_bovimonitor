@@ -6,11 +6,14 @@
     <h1>Excluir minha conta</h1>
     <p>Esta ação é permanente. A conta, a propriedade rural, os lotes e os históricos de manejo ligados a ela serão
         removidos.</p>
-    <form method="post" class="actions"
+    <form method="post" class="form-stack"
         onsubmit="return confirm('Tem certeza que deseja excluir a conta e os dados vinculados?');">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Confirme sua senha<input type="password" name="senha" required autocomplete="current-password"></label>
+        <div class="actions">
         <button class="button button-danger" type="submit">Sim, excluir minha conta</button>
         <a class="button button-outline" href="{{ url_for('perfil') }}">Cancelar</a>
+        </div>
     </form>
 </section>
 {% endblock %}

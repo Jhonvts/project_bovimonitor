@@ -13,8 +13,9 @@
   <form method="post" class="inline-form">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <label>Nome do lote<input name="nome" maxlength="100" placeholder="Ex.: Lote Nelore 01" required></label>
-    <label>Quantidade de cabeças<input type="number" name="quantidade_cabecas" min="1" required
+    <label>Quantidade de cabeças<input type="number" name="quantidade_cabecas" min="1" max="100000" required
         placeholder="Ex.: 45"></label>
+    {% if current_user.perfil == 'admin' %}<label>Produtor responsável<select name="usuario_id" required><option value="">Selecione o produtor</option>{% for usuario in usuarios %}<option value="{{ usuario.id }}">{{ usuario.nome }} — {{ usuario.email }}</option>{% endfor %}</select></label>{% endif %}
     <button class="button" type="submit">+ Cadastrar lote</button>
   </form>
 </section>
@@ -26,6 +27,7 @@
     <table>
       <thead>
         <tr>
+          {% if current_user.perfil == 'admin' %}<th>Produtor</th>{% endif %}
           <th>Nome</th>
           <th>Cabeças</th>
           <th>Status</th>
@@ -34,13 +36,14 @@
       </thead>
       <tbody>
         {% for lote in lotes %}<tr>
+          {% if current_user.perfil == 'admin' %}<td>{{ lote.usuario.nome }}</td>{% endif %}
           <td><strong>{{ lote.nome }}</strong></td>
           <td>{{ lote.quantidade_cabecas }}</td>
-          <td><span class="pill pill-success">{{ lote.status }}</span></td>
+          <td><span class="pill {{ 'pill-danger' if status_lotes[lote.id] == 'BLOQUEADO' else 'pill-success' }}">{{ status_lotes[lote.id] }}</span></td>
           <td class="actions"><a class="button button-small button-outline"
               href="{{ url_for('editar_lote', lote_id=lote.id) }}">Editar</a>
             <form method="post" action="{{ url_for('excluir_lote', lote_id=lote.id) }}"
-              onsubmit="return confirm('Excluir este lote?');"><button class="button button-small button-danger"
+              onsubmit="return confirm('Excluir o lote e todos os manejos vinculados a ele?');"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button button-small button-danger"
                 type="submit">Excluir</button></form>
           </td>
         </tr>{% endfor %}

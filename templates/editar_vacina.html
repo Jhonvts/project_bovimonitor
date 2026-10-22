@@ -7,17 +7,15 @@
     <form method="post" class="form-stack">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Nome<input name="nome" maxlength="100" required value="{{ vacina.nome }}"></label>
-        <label>Tipo<select name="tipo" required>
-                <option value="Vacina" {% if vacina.tipo=='Vacina' %}selected{% endif %}>Vacina</option>
-                <option value="Medicamento" {% if vacina.tipo=='Medicamento' %}selected{% endif %}>Medicamento</option>
+        <label>Categoria<select name="categoria" required>
+                {% for categoria in ['Vacina','Vermífugo','Antiparasitário','Antibiótico','Anti-inflamatório','Vitamina/Suplemento','Outro medicamento','Medicamento'] %}<option value="{{ categoria }}" {% if (vacina.categoria or vacina.tipo)==categoria %}selected{% endif %}>{{ categoria }}</option>{% endfor %}
             </select></label>
         <label>Fabricante<input name="fabricante" maxlength="100" value="{{ vacina.fabricante or '' }}"></label>
         <label>Dias de carência<input type="number" name="dias_carencia" min="0" required
                 value="{{ vacina.dias_carencia }}"></label>
         <label class="check-label"><input type="checkbox" name="obrigatoria" {% if vacina.obrigatoria %}checked{% endif
                 %}> Item obrigatório</label>
-        <p class="small muted">Ao salvar, a data de liberação dos manejos deste item será recalculada usando a nova
-            carência.</p>
+        <p class="small muted">A nova carência será usada nos próximos manejos. Os registros anteriores preservam o cálculo original.</p>
         <div class="actions"><button class="button" type="submit">Salvar alterações</button><a
                 class="button button-outline" href="{{ url_for('vacinas') }}">Cancelar</a></div>
     </form>

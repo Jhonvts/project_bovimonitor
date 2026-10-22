@@ -7,12 +7,12 @@
     <form method="post" class="form-stack">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Lote<select name="lote_id" required>{% for lote in lotes %}<option value="{{ lote.id }}" {% if
-                    lote.id==manejo.lote_id %}selected{% endif %}>{{ lote.nome }} ({{ lote.quantidade_cabecas }}
+                    lote.id==manejo.lote_id %}selected{% endif %}>{{ lote.nome }}{% if current_user.perfil == 'admin' %} — {{ lote.usuario.nome }}{% endif %} ({{ lote.quantidade_cabecas }}
                     cabeças)</option>{% endfor %}</select></label>
         <label>Vacina/medicamento<select name="vacina_id" required>{% for vacina in vacinas %}<option
-                    value="{{ vacina.id }}" {% if vacina.id==manejo.vacina_id %}selected{% endif %}>{{ vacina.nome }} —
+                    value="{{ vacina.id }}" {% if vacina.id==manejo.vacina_id %}selected{% endif %}>{{ vacina.nome }}{% if current_user.perfil == 'admin' and vacina.usuario_id %} — {{ vacina.usuario.nome }}{% endif %} —
                     {{ vacina.dias_carencia }} dia(s)</option>{% endfor %}</select></label>
-        <label>Data da aplicação<input type="date" name="data_aplicacao" required
+        <label>Data da aplicação<input type="date" name="data_aplicacao" max="{{ hoje.isoformat() }}" required
                 value="{{ manejo.data_aplicacao.isoformat() }}"></label>
         <label>Observação<input name="observacao" maxlength="300" value="{{ manejo.observacao or '' }}"></label>
         <div class="actions"><button class="button" type="submit">Salvar alterações</button><a

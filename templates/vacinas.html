@@ -5,17 +5,17 @@
     <div>
         <div class="eyebrow">CALENDÁRIO SANITÁRIO</div>
         <h1>Vacinas e medicamentos</h1>
-        <p>Cadastre os itens utilizados e seus períodos de carência.</p>
+        <p>Registre itens do seu catálogo pessoal e consulte os produtos compartilhados pela administração.</p>
     </div>
 </div>
 <section class="panel">
-    <h2>Novo item</h2>
+    <h2>{{ 'Novo item compartilhado' if current_user.perfil == 'admin' else 'Adicionar ao meu catálogo' }}</h2>
+    <p class="muted">{{ 'Este item ficará disponível para todos os produtores.' if current_user.perfil == 'admin' else 'Este item fica visível somente para você e poderá ser usado nos seus manejos.' }}</p>
     <form method="post" class="form-grid">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Nome<input name="nome" maxlength="100" required placeholder="Nome da vacina ou medicamento"></label>
-        <label>Tipo<select name="tipo" required>
-                <option value="Vacina">Vacina</option>
-                <option value="Medicamento">Medicamento</option>
+        <label>Categoria<select name="categoria" required>
+                {% for categoria in ['Vacina','Vermífugo','Antiparasitário','Antibiótico','Anti-inflamatório','Vitamina/Suplemento','Outro medicamento'] %}<option value="{{ categoria }}">{{ categoria }}</option>{% endfor %}
             </select></label>
         <label>Fabricante<input name="fabricante" maxlength="100" placeholder="Fabricante (opcional)"></label>
         <label>Dias de carência<input type="number" name="dias_carencia" min="0" required value="0"></label>
@@ -32,7 +32,8 @@
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Tipo</th>
+                    <th>Categoria</th>
+                    {% if current_user.perfil == 'admin' %}<th>Responsável</th>{% endif %}<th>Catálogo</th>
                     <th>Fabricante</th>
                     <th>Carência</th>
                     <th>Obrigatória</th>
@@ -42,19 +43,20 @@
             <tbody>
                 {% for v in vacinas %}<tr>
                     <td><strong>{{ v.nome }}</strong></td>
-                    <td>{{ v.tipo }}</td>
+                    <td>{{ v.categoria or v.tipo }}</td>
+                    {% if current_user.perfil == 'admin' %}<td>{{ v.usuario.nome if v.usuario_id else 'Todos os produtores' }}</td>{% endif %}<td>{{ 'Compartilhado' if not v.usuario_id else 'Pessoal' }}</td>
                     <td>{{ v.fabricante or '—' }}</td>
                     <td>{{ v.dias_carencia }} dia(s)</td>
                     <td>{{ 'Sim' if v.obrigatoria else 'Não' }}</td>
-                    <td class="actions"><a class="button button-small button-outline"
+                    <td class="actions">{% if current_user.perfil == 'admin' or v.usuario_id == current_user.id %}<a class="button button-small button-outline"
                             href="{{ url_for('editar_vacina', vacina_id=v.id) }}">Editar</a>
                         <form method="post" action="{{ url_for('excluir_vacina', vacina_id=v.id) }}"
-                            onsubmit="return confirm('Excluir este item?');"><button
-                                class="button button-small button-danger" type="submit">Excluir</button></form>
+                            onsubmit="return confirm('Excluir este item e os manejos vinculados?');"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button
+                                class="button button-small button-danger" type="submit">Excluir</button></form>{% else %}<span class="muted small">Somente consulta</span>{% endif %}
                     </td>
                 </tr>{% endfor %}
             </tbody>
         </table>
-    </div>{% else %}<p class="empty">Nenhuma vacina cadastrada.</p>{% endif %}
+    </div>{% else %}<p class="empty">Nenhum item sanitário disponível. Cadastre um item pessoal ou peça à administração para incluir opções compartilhadas.</p>{% endif %}
 </section>
 {% endblock %}

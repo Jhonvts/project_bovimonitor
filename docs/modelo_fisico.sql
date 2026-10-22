@@ -1,142 +1,88 @@
-/*M!999999\- enable the sandbox mode */ 
--- MariaDB dump 10.20-13.0.2-MariaDB, for Win64 (AMD64)
---
--- Host: localhost    Database: bovimonitor
--- ------------------------------------------------------
--- Server version	13.0.2-MariaDB
+-- BoviMonitor - Modelo físico para MariaDB 10.6+
+-- Banco vazio: executar antes de objetos_programaveis.sql e usuários.sql.
+-- Senhas e usuários de banco são configurados separadamente em usuarios.sql.
+CREATE DATABASE IF NOT EXISTS bovimonitor
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bovimonitor;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
+CREATE TABLE IF NOT EXISTS usuario (
+  id INT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(120) NOT NULL,
+  telefone VARCHAR(20) NULL,
+  senha_hash VARCHAR(255) NOT NULL,
+  perfil VARCHAR(20) NOT NULL DEFAULT 'usuario',
+  ativo BOOLEAN NOT NULL DEFAULT TRUE,
+  ultimo_acesso DATETIME NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT uq_usuario_email UNIQUE (email)
+) ENGINE=InnoDB COMMENT='Contas de produtores e administradores da aplicação';
 
---
--- Table structure for table `auditoria_lotes`
---
+CREATE TABLE IF NOT EXISTS propriedade (
+  id INT NOT NULL AUTO_INCREMENT,
+  usuario_id INT NOT NULL,
+  nome VARCHAR(120) NOT NULL,
+  localizacao VARCHAR(200) NOT NULL,
+  area FLOAT NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT uq_propriedade_usuario UNIQUE (usuario_id),
+  CONSTRAINT fk_propriedade_usuario FOREIGN KEY (usuario_id)
+    REFERENCES usuario (id) ON DELETE CASCADE
+) ENGINE=InnoDB COMMENT='Uma propriedade rural vinculada a cada conta';
 
-DROP TABLE IF EXISTS `auditoria_lotes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `auditoria_lotes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `lote_id` int(11) NOT NULL,
-  `nome_lote` varchar(100) NOT NULL,
-  `data_registro` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS lote (
+  id INT NOT NULL AUTO_INCREMENT,
+  usuario_id INT NOT NULL,
+  nome VARCHAR(100) NOT NULL,
+  quantidade_cabecas INT NOT NULL,
+  status VARCHAR(30) NOT NULL DEFAULT 'ATIVO',
+  PRIMARY KEY (id),
+  KEY idx_lote_usuario (usuario_id),
+  CONSTRAINT fk_lote_usuario FOREIGN KEY (usuario_id)
+    REFERENCES usuario (id) ON DELETE CASCADE,
+  CONSTRAINT ck_lote_quantidade CHECK (quantidade_cabecas > 0)
+) ENGINE=InnoDB COMMENT='Grupo de animais cadastrado pelo produtor';
 
---
--- Table structure for table `lote`
---
+CREATE TABLE IF NOT EXISTS vacina (
+  id INT NOT NULL AUTO_INCREMENT,
+  usuario_id INT NULL,
+  nome VARCHAR(100) NOT NULL,
+  tipo VARCHAR(20) NOT NULL DEFAULT 'Vacina',
+  categoria VARCHAR(40) NOT NULL DEFAULT 'Vacina',
+  fabricante VARCHAR(100) NULL,
+  dias_carencia INT NOT NULL DEFAULT 0,
+  obrigatoria BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (id),
+  KEY idx_vacina_usuario (usuario_id),
+  KEY idx_vacina_nome (nome),
+  CONSTRAINT ck_vacina_carencia CHECK (dias_carencia >= 0),
+  CONSTRAINT fk_vacina_usuario FOREIGN KEY (usuario_id)
+    REFERENCES usuario (id) ON DELETE CASCADE
+) ENGINE=InnoDB COMMENT='Itens sanitários compartilhados (usuario_id NULL) ou privados por produtor';
 
-DROP TABLE IF EXISTS `lote`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `lote` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `usuario_id` int(11) NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  `quantidade_cabecas` int(11) NOT NULL,
-  `status` varchar(30) NOT NULL DEFAULT 'ATIVO',
-  PRIMARY KEY (`id`),
-  KEY `idx_lote_usuario` (`usuario_id`),
-  CONSTRAINT `1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE IF NOT EXISTS manejo_sanitario (
+  id INT NOT NULL AUTO_INCREMENT,
+  lote_id INT NOT NULL,
+  vacina_id INT NOT NULL,
+  data_aplicacao DATE NOT NULL,
+  data_liberacao DATE NOT NULL,
+  observacao VARCHAR(300) NULL,
+  PRIMARY KEY (id),
+  KEY idx_manejo_lote_data (lote_id, data_aplicacao),
+  KEY idx_manejo_vacina (vacina_id),
+  CONSTRAINT fk_manejo_lote FOREIGN KEY (lote_id)
+    REFERENCES lote (id) ON DELETE CASCADE,
+  CONSTRAINT fk_manejo_vacina FOREIGN KEY (vacina_id) REFERENCES vacina (id) ON DELETE CASCADE
+) ENGINE=InnoDB COMMENT='Histórico sanitário com datas de aplicação e liberação';
 
---
--- Table structure for table `manejo_sanitario`
---
-
-DROP TABLE IF EXISTS `manejo_sanitario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `manejo_sanitario` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `lote_id` int(11) NOT NULL,
-  `vacina_id` int(11) NOT NULL,
-  `data_aplicacao` date NOT NULL,
-  `data_liberacao` date NOT NULL,
-  `observacao` varchar(300) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `lote_id` (`lote_id`),
-  KEY `vacina_id` (`vacina_id`),
-  CONSTRAINT `1` FOREIGN KEY (`lote_id`) REFERENCES `lote` (`id`),
-  CONSTRAINT `2` FOREIGN KEY (`vacina_id`) REFERENCES `vacina` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `propriedade`
---
-
-DROP TABLE IF EXISTS `propriedade`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `propriedade` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `usuario_id` int(11) NOT NULL,
-  `nome` varchar(120) NOT NULL,
-  `localizacao` varchar(200) NOT NULL,
-  `area` float NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `usuario_id` (`usuario_id`),
-  CONSTRAINT `1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `usuario`
---
-
-DROP TABLE IF EXISTS `usuario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `usuario` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(100) NOT NULL,
-  `email` varchar(120) NOT NULL,
-  `telefone` varchar(20) DEFAULT NULL,
-  `senha_hash` varchar(255) NOT NULL,
-  `perfil` varchar(20) NOT NULL DEFAULT 'usuario',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `vacina`
---
-
-DROP TABLE IF EXISTS `vacina`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `vacina` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(100) NOT NULL,
-  `tipo` varchar(20) NOT NULL DEFAULT 'Vacina',
-  `fabricante` varchar(100) DEFAULT NULL,
-  `dias_carencia` int(11) NOT NULL DEFAULT 0,
-  `obrigatoria` tinyint(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nome` (`nome`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
-
--- Dump completed on 2026-10-13 19:13:27
+-- Sem FK de lote intencionalmente: a trilha de auditoria precisa sobreviver à remoção do lote.
+CREATE TABLE IF NOT EXISTS auditoria_lotes (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  lote_id INT NULL,
+  usuario_id INT NULL,
+  nome_lote VARCHAR(100) NOT NULL,
+  acao VARCHAR(20) NOT NULL,
+  data_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_auditoria_lotes_data (data_registro)
+) ENGINE=InnoDB COMMENT='Cópia dos eventos de criação, atualização e exclusão de lotes';

@@ -1,63 +1,65 @@
-
 @startuml modelo_logico
-
-title Modelo Lógico de Dados - BoviMonitor
-
+title BoviMonitor - modelo lógico
 hide methods
-hide stereotypes
 skinparam linetype ortho
-
-entity "Usuario" as usuario {
-  * id
+entity Usuario {
+  * id : INT <<PK>>
   --
-  nome
-  email
-  telefone
-  senha_hash
-  perfil
+  nome : VARCHAR(100)
+  email : VARCHAR(120) <<UK>>
+  telefone : VARCHAR(20)
+  senha_hash : VARCHAR(255)
+  perfil : VARCHAR(20)
+  ativo : BOOLEAN
+  ultimo_acesso : DATETIME
 }
-
-entity "Propriedade" as propriedade {
-  * id
+entity Propriedade {
+  * id : INT <<PK>>
   --
-  usuario_id
-  nome
-  localizacao
-  area
+  usuario_id : INT <<FK, UK>>
+  nome : VARCHAR(120)
+  localizacao : VARCHAR(200)
+  area : FLOAT
 }
-
-entity "Lote" as lote {
-  * id
+entity Lote {
+  * id : INT <<PK>>
   --
-  usuario_id
-  nome
-  quantidade_cabecas
-  status
+  usuario_id : INT <<FK>>
+  nome : VARCHAR(100)
+  quantidade_cabecas : INT
+  status : VARCHAR(30)
 }
-
-entity "Vacina" as vacina {
-  * id
+entity Vacina {
+  * id : INT <<PK>>
   --
-  nome
-  tipo
-  fabricante
-  dias_carencia
-  obrigatoria
+  nome : VARCHAR(100) <<UK>>
+  tipo : VARCHAR(20)
+  categoria : VARCHAR(40)
+  fabricante : VARCHAR(100)
+  dias_carencia : INT
+  obrigatoria : BOOLEAN
 }
-
-entity "ManejoSanitario" as manejo {
-  * id
+entity ManejoSanitario {
+  * id : INT <<PK>>
   --
-  lote_id
-  vacina_id
-  data_aplicacao
-  data_liberacao
-  observacao
+  lote_id : INT <<FK>>
+  vacina_id : INT <<FK>>
+  data_aplicacao : DATE
+  data_liberacao : DATE
+  observacao : VARCHAR(300)
 }
-
-usuario ||--o| propriedade : possui
-usuario ||--o{ lote : cadastra
-lote ||--o{ manejo : recebe
-vacina ||--o{ manejo : utilizada em
-
+entity AuditoriaLotes {
+  * id : BIGINT <<PK>>
+  --
+  lote_id : INT (referência histórica)
+  usuario_id : INT (referência histórica)
+  nome_lote : VARCHAR(100)
+  acao : VARCHAR(20)
+  data_registro : TIMESTAMP
+}
+Usuario ||--o| Propriedade : possui
+Usuario ||--o{ Lote : cadastra
+Lote ||--o{ ManejoSanitario : recebe
+Vacina ||--o{ ManejoSanitario : utilizada em
+Lote .. AuditoriaLotes : gera eventos
 @enduml

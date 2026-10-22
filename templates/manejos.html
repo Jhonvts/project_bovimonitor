@@ -14,14 +14,14 @@
     <form method="post" class="form-grid">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Lote<select name="lote_id" required>
-                <option value="">Selecione um lote</option>{% for l in lotes %}<option value="{{ l.id }}">{{ l.nome }}
+                <option value="">Selecione um lote</option>{% for l in lotes %}<option value="{{ l.id }}">{{ l.nome }}{% if current_user.perfil == 'admin' %} — {{ l.usuario.nome }}{% endif %}
                     ({{ l.quantidade_cabecas }} cabeças)</option>{% endfor %}
             </select></label>
         <label>Vacina/medicamento<select name="vacina_id" required>
-                <option value="">Selecione um item</option>{% for v in vacinas %}<option value="{{ v.id }}">{{ v.nome }}
+                <option value="">Selecione um item</option>{% for v in vacinas %}<option value="{{ v.id }}">{{ v.nome }}{% if current_user.perfil == 'admin' and v.usuario_id %} — {{ v.usuario.nome }}{% endif %}
                     — {{ v.dias_carencia }} dia(s) de carência</option>{% endfor %}
             </select></label>
-        <label>Data da aplicação<input type="date" name="data_aplicacao" required
+        <label>Data da aplicação<input type="date" name="data_aplicacao" max="{{ hoje.isoformat() }}" required
                 value="{{ hoje.isoformat() }}"></label>
         <label>Observação (opcional)<input name="observacao" maxlength="300"
                 placeholder="Responsável, lote do produto etc."></label>
@@ -39,6 +39,7 @@
         <table>
             <thead>
                 <tr>
+                    {% if current_user.perfil == 'admin' %}<th>Produtor</th>{% endif %}
                     <th>Lote</th>
                     <th>Vacina/medicamento</th>
                     <th>Aplicação</th>
@@ -50,6 +51,7 @@
             </thead>
             <tbody>
                 {% for m in manejos %}<tr>
+                    {% if current_user.perfil == 'admin' %}<td>{{ m.lote.usuario.nome }}</td>{% endif %}
                     <td>{{ m.lote.nome }}</td>
                     <td>{{ m.vacina.nome }}</td>
                     <td>{{ m.data_aplicacao.strftime('%d/%m/%Y') }}</td>
@@ -60,7 +62,7 @@
                     <td class="actions"><a class="button button-small button-outline"
                             href="{{ url_for('editar_manejo', manejo_id=m.id) }}">Editar</a>
                         <form method="post" action="{{ url_for('excluir_manejo', manejo_id=m.id) }}"
-                            onsubmit="return confirm('Remover este registro do histórico?');"><button
+                            onsubmit="return confirm('Remover este registro do histórico?');"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button
                                 class="button button-small button-danger" type="submit">Excluir</button></form>
                     </td>
                 </tr>{% endfor %}

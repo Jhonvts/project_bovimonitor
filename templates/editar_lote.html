@@ -6,8 +6,9 @@
     <h1>Editar lote</h1>
     <form method="post" class="form-stack">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if current_user.perfil == 'admin' %}<label>Produtor responsável<select name="usuario_id" required>{% for usuario in usuarios %}<option value="{{ usuario.id }}" {% if usuario.id == lote.usuario_id %}selected{% endif %}>{{ usuario.nome }} — {{ usuario.email }}</option>{% endfor %}</select></label>{% endif %}
         <label>Nome do lote<input name="nome" maxlength="100" required value="{{ lote.nome }}"></label>
-        <label>Quantidade de cabeças<input type="number" name="quantidade_cabecas" min="1" required
+        <label>Quantidade de cabeças<input type="number" name="quantidade_cabecas" min="1" max="100000" required
                 value="{{ lote.quantidade_cabecas }}"></label>
         <div class="actions"><button class="button" type="submit">Salvar alterações</button><a
                 class="button button-outline" href="{{ url_for('lotes') }}">Cancelar</a></div>

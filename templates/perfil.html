@@ -31,6 +31,7 @@
         <p><strong>Localização</strong><br>{{ propriedade.localizacao }}</p>
         <p><strong>Área</strong><br>{{ propriedade.area }} hectare(s)</p>
     </div>
+    <form method="post" action="{{ url_for('excluir_propriedade') }}" onsubmit="return confirm('Remover apenas os dados da propriedade? Os lotes e manejos serão preservados.');"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button button-small button-danger" type="submit">Excluir propriedade</button></form>
     {% else %}
     <p class="empty">Você ainda não cadastrou sua propriedade rural.</p>
     <a class="button" href="{{ url_for('cadastrar_propriedade') }}">Cadastrar propriedade</a>
@@ -38,7 +39,7 @@
 </section>
 <section class="panel">
     <h2>Conta</h2>
-    <p class="muted">A exclusão da conta também remove os lotes, manejos e a propriedade vinculados a ela.</p>
+    <p class="muted">A exclusão da conta também remove os lotes, manejos e a propriedade vinculados a ela. Será solicitada sua senha antes da confirmação.</p>
     <a class="button button-danger" href="{{ url_for('excluir_perfil') }}">Excluir minha conta</a>
 </section>
 {% endblock %}

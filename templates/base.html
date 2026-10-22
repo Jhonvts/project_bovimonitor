@@ -1,53 +1,37 @@
 <!doctype html>
-<html lang="pt-br">
-
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12354a">
   <title>{% block title %}BoviMonitor{% endblock %}</title>
-
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="icon" type="image/png" href="/static/css/img/bovimonitorLogo.png">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='css/img/bovimonitorLogo.png') }}">
 </head>
-
 <body>
-  <header class="topbar">
-
-    <a class="brand" href="{{ url_for('index') }}">
-      🐂 BoviMonitor
-    </a>
-
-    {% if current_user.is_authenticated %}
-    <nav>
-      <a href="{{ url_for('dashboard') }}">Painel</a>
-      <a href="{{ url_for('lotes') }}">Lotes</a>
-      <a href="{{ url_for('vacinas') }}">Vacinas</a>
-      <a href="{{ url_for('manejos') }}">Manejos</a>
-      <a href="{{ url_for('perfil') }}">Meu perfil</a>
+{% if current_user.is_authenticated %}
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}"><img src="{{ url_for('static', filename='css/img/bovimonitorLogo.png') }}" alt=""><span>Bovi<span class="brand-light">Monitor</span></span></a>
+    <div class="nav-label">REBANHO</div>
+    <nav class="side-nav" aria-label="Navegação principal">
+      <a class="{{ 'active' if request.endpoint == 'dashboard' else '' }}" href="{{ url_for('dashboard') }}"><span>▦</span>Painel</a>
+      <a class="{{ 'active' if request.endpoint in ['lotes','editar_lote'] else '' }}" href="{{ url_for('lotes') }}"><span>♧</span>Lotes</a>
+      <a class="{{ 'active' if request.endpoint in ['vacinas','editar_vacina'] else '' }}" href="{{ url_for('vacinas') }}"><span>✚</span>Vacinas e medicamentos</a>
+      <a class="{{ 'active' if request.endpoint in ['manejos','editar_manejo'] else '' }}" href="{{ url_for('manejos') }}"><span>☷</span>Manejos</a>
+      <a class="{{ 'active' if request.endpoint in ['perfil','editar_perfil'] else '' }}" href="{{ url_for('perfil') }}"><span>♙</span>Meu perfil</a>
     </nav>
-    <div class="user-area">
-      <span>{{ current_user.nome }}</span>
-      <form method="post" action="{{ url_for('sair') }}">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <button class="button button-quiet" type="submit">Sair</button>
-      </form>
-    </div>
-    {% endif %}
-  </header>
-  <main class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <section class="messages" aria-live="polite">
-      {% for category, message in messages %}
-      <div class="alert alert-{{ category }}">{{ message }}</div>
-      {% endfor %}
-    </section>
-    {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-  </main>
-  <footer class="footer">BoviMonitor &copy; 2026 - Equipe Jimpye</footer>
+    {% if current_user.perfil == 'admin' %}<div class="nav-label admin-label">ADMINISTRAÇÃO</div><nav class="side-nav" aria-label="Administração">
+      <a href="{{ url_for('admin_painel') }}"><span>◈</span>Visão geral</a><a href="{{ url_for('admin_usuarios') }}"><span>♧</span>Usuários</a><a href="{{ url_for('admin_auditoria') }}"><span>≡</span>Auditoria</a>
+    </nav>{% endif %}
+    <div class="sidebar-bottom"><div class="user-chip"><span class="avatar">{{ current_user.nome[:1]|upper }}</span><div><strong>{{ current_user.nome }}</strong><small>{{ 'Administrador' if current_user.perfil == 'admin' else 'Produtor' }}</small></div></div>
+      <form method="post" action="{{ url_for('sair') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="logout-button" type="submit">↪ Sair da conta</button></form></div>
+  </aside>
+  <div class="main-column"><header class="mobile-header"><a class="brand" href="{{ url_for('dashboard') }}">🐂 BoviMonitor</a><span>{{ current_user.nome }}</span></header><main class="container">
+{% else %}<main class="auth-shell">
+{% endif %}
+  {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<section class="messages" aria-live="polite">{% for category, message in messages %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}</section>{% endif %}{% endwith %}
+  {% block content %}{% endblock %}
+</main>
+{% if current_user.is_authenticated %}<footer class="footer">BoviMonitor &copy; 2026 <span>•</span> Manejo responsável, informação organizada.</footer></div></div>{% else %}<footer class="auth-footer">BoviMonitor &copy; 2026</footer>{% endif %}
 </body>
-
 </html>
